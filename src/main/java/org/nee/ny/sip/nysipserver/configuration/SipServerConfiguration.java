@@ -3,7 +3,6 @@ package org.nee.ny.sip.nysipserver.configuration;
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.listeners.SipServerListeners;
 import org.nee.ny.sip.nysipserver.utils.IntentAddressUtil;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
