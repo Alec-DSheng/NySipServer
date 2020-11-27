@@ -1,9 +1,8 @@
 package org.nee.ny.sip.nysipserver.listeners;
 
-import org.nee.ny.sip.nysipserver.domain.DeviceInfo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
+
+import javax.sip.*;
 
 /**
  * @Author: alec
@@ -11,14 +10,36 @@ import org.springframework.stereotype.Component;
  * @date: 12:23 2020-11-27
  */
 @Component
-public class SipServerListeners {
+public class SipServerListeners  implements SipListener {
 
-    @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
 
-    public void listeners() {
+    @Override
+    public void processRequest(RequestEvent requestEvent) {
 
-        DeviceInfo deviceInfo = new DeviceInfo("001");
-        applicationEventPublisher.publishEvent(deviceInfo);
+    }
+
+    @Override
+    public void processResponse(ResponseEvent responseEvent) {
+
+    }
+
+    @Override
+    public void processTimeout(TimeoutEvent timeoutEvent) {
+
+    }
+
+    @Override
+    public void processIOException(IOExceptionEvent ioExceptionEvent) {
+
+    }
+
+    @Override
+    public void processTransactionTerminated(TransactionTerminatedEvent transactionTerminatedEvent) {
+
+    }
+
+    @Override
+    public void processDialogTerminated(DialogTerminatedEvent dialogTerminatedEvent) {
+
     }
 }
