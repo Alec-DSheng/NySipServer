@@ -18,6 +18,6 @@ public class DeviceServiceImpl implements DeviceService {
 
     @EventListener
     public void deviceRegister(DeviceInfo deviceInfo) {
-        log.debug("监听到注册事件,处理设备注册逻辑 {}", deviceInfo);
+        log.info("监听到注册事件,处理设备注册逻辑 {}", deviceInfo);
     }
 }
