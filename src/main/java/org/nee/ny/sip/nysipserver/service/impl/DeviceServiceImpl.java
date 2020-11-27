@@ -35,6 +35,14 @@ public class DeviceServiceImpl implements DeviceService {
         this.sipMessageResponseHandler = sipMessageResponseHandler;
     }
 
+
+    @Override
+    public void dealDeviceOffline(String deviceNo) {
+        log.info("设备 {} 下线", deviceNo);
+        //发送kafka 消息由上层应用更新其设备状态
+
+    }
+
     @EventListener
     public void deviceRegister(RegisterMessageEvent registerMessageEvent) {
         RequestEvent requestEvent =  registerMessageEvent.getRequestEvent();
@@ -56,4 +64,5 @@ public class DeviceServiceImpl implements DeviceService {
     private void sendResponse(RequestEvent requestEvent, Response response) {
         sipMessageResponseHandler.sendResponse(requestEvent, response);
     }
+
 }

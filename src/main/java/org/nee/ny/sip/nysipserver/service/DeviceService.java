@@ -8,4 +8,6 @@ package org.nee.ny.sip.nysipserver.service;
  */
 public interface DeviceService {
 
+    void dealDeviceOffline(String deviceNo);
+
 }
