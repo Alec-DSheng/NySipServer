@@ -5,7 +5,6 @@ import org.nee.ny.sip.nysipserver.event.MessageEvent;
 import org.nee.ny.sip.nysipserver.event.RegisterMessageEvent;
 
 import javax.sip.RequestEvent;
-import javax.sip.message.Request;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;

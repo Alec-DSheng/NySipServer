@@ -3,7 +3,6 @@ package org.nee.ny.sip.nysipserver.listeners;
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.event.MessageEvent;
 import org.nee.ny.sip.nysipserver.listeners.factory.MessageEventFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +17,7 @@ import javax.sip.message.Response;
  */
 @Component
 @Slf4j
-public class SipServerListeners  implements SipListener {
+public class SipServerListeners implements SipListener {
 
     private final ApplicationEventPublisher publisher;
 

@@ -2,7 +2,8 @@ package org.nee.ny.sip.nysipserver.configuration;
 
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.listeners.SipServerListeners;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.nee.ny.sip.nysipserver.utils.IntentAddressUtil;
+import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,6 +11,8 @@ import javax.sip.*;
 import javax.sip.address.AddressFactory;
 import javax.sip.header.HeaderFactory;
 import javax.sip.message.MessageFactory;
+import java.net.Inet4Address;
+import java.rmi.UnknownHostException;
 import java.util.Properties;
 import java.util.TooManyListenersException;
 
@@ -24,7 +27,8 @@ public class SipServerConfiguration {
 
     private final SipServerProperties sipServerProperties;
 
-    private final SipServerListeners sipServerListeners;
+    public final SipServerListeners sipServerListeners;
+
 
     public SipServerConfiguration(SipServerProperties sipServerProperties, SipServerListeners sipServerListeners) {
         this.sipServerProperties = sipServerProperties;
@@ -63,23 +67,27 @@ public class SipServerConfiguration {
 
     @Bean
     public SipProvider sipTcpProvider(SipStack sipStack) throws InvalidArgumentException,
-            TransportNotSupportedException, ObjectInUseException, TooManyListenersException {
-        ListeningPoint tcpListeningPoint = sipStack.createListeningPoint(sipServerProperties.getHost(),
+            TransportNotSupportedException, ObjectInUseException, TooManyListenersException, UnknownHostException {
+        ListeningPoint tcpListeningPoint = sipStack.createListeningPoint(getIp(),
                 sipServerProperties.getPort(), ListeningPoint.TCP);
         SipProvider sipProvider = sipStack.createSipProvider(tcpListeningPoint);
         sipProvider.addSipListener(sipServerListeners);
-        log.info("Sip Server TCP 启动成功 port {}" , tcpListeningPoint.getPort());
+        log.info("Sip Server TCP 启动成功 ip {} port {}" , tcpListeningPoint.getIPAddress() , tcpListeningPoint.getPort());
         return sipProvider;
     }
     @Bean
     public SipProvider sipUdpProvider(SipStack sipStack) throws InvalidArgumentException,
-            TransportNotSupportedException, ObjectInUseException, TooManyListenersException {
-        ListeningPoint udpListeningPoint = sipStack.createListeningPoint(sipServerProperties.getHost(),
+            TransportNotSupportedException, ObjectInUseException, TooManyListenersException, UnknownHostException {
+        ListeningPoint udpListeningPoint = sipStack.createListeningPoint(getIp(),
                 sipServerProperties.getPort(), ListeningPoint.UDP);
         SipProvider sipProvider = sipStack.createSipProvider(udpListeningPoint);
         sipProvider.addSipListener(sipServerListeners);
-        log.info("Sip Server UDP 启动成功 port {}" , udpListeningPoint.getPort());
+        log.info("Sip Server UDP 启动成功 ip {}, port {}" , udpListeningPoint.getIPAddress(),udpListeningPoint.getPort());
         return sipProvider;
     }
 
+    private String getIp () throws UnknownHostException {
+        Inet4Address  ip = IntentAddressUtil.getLocalIp4Address().orElseThrow(() -> new UnknownHostException("IP地址获取失败"));
+        return  ip.getHostAddress();
+    }
 }
