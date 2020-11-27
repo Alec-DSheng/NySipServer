@@ -1,8 +1,15 @@
 package org.nee.ny.sip.nysipserver.listeners;
 
+import lombok.extern.slf4j.Slf4j;
+import org.nee.ny.sip.nysipserver.event.MessageEvent;
+import org.nee.ny.sip.nysipserver.listeners.factory.MessageEventFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import javax.sip.*;
+import javax.sip.message.Request;
+import javax.sip.message.Response;
 
 /**
  * @Author: alec
@@ -10,17 +17,27 @@ import javax.sip.*;
  * @date: 12:23 2020-11-27
  */
 @Component
+@Slf4j
 public class SipServerListeners  implements SipListener {
 
+    private final ApplicationEventPublisher publisher;
+
+    public SipServerListeners(ApplicationEventPublisher publisher) {
+        this.publisher = publisher;
+    }
 
     @Override
     public void processRequest(RequestEvent requestEvent) {
-
+        Request request = requestEvent.getRequest();
+        log.info("listeners request method {}", request.getMethod());
+        MessageEvent messageEvent = MessageEventFactory.getInstance().getMessageEvent(requestEvent);
+        publisher.publishEvent(messageEvent);
     }
 
     @Override
     public void processResponse(ResponseEvent responseEvent) {
-
+        Response response = responseEvent.getResponse();
+        log.info("listeners response StatusCode {}", response.getStatusCode());
     }
 
     @Override

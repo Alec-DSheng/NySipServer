@@ -27,4 +27,6 @@ public class SipServerProperties {
     private String mediaIp;
 
     private Integer mediaPort;
+
+    private String password;
 }
