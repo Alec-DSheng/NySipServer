@@ -1,6 +1,7 @@
 package org.nee.ny.sip.nysipserver.listeners.factory;
 
 
+import org.nee.ny.sip.nysipserver.event.DeviceMessageEvent;
 import org.nee.ny.sip.nysipserver.event.MessageEvent;
 import org.nee.ny.sip.nysipserver.event.RegisterMessageEvent;
 
@@ -23,6 +24,7 @@ public class MessageEventFactory {
     private MessageEventFactory(){
         messageEventMap = new ConcurrentHashMap<>();
         messageEventMap.put("REGISTER", new RegisterMessageEvent());
+        messageEventMap.put("MESSAGE", new DeviceMessageEvent());
     }
 
 
