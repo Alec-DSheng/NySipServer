@@ -3,9 +3,11 @@ package org.nee.ny.sip.nysipserver.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.configuration.SipServerProperties;
 import org.nee.ny.sip.nysipserver.event.RegisterMessageEvent;
+import org.nee.ny.sip.nysipserver.model.DeviceCacheOperatorModel;
 import org.nee.ny.sip.nysipserver.service.DeviceService;
 import org.nee.ny.sip.nysipserver.transaction.response.SipRegisterResponse;
 import org.nee.ny.sip.nysipserver.transaction.response.impl.SipMessageResponseHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,9 @@ public class DeviceServiceImpl implements DeviceService {
     private final SipServerProperties sipServerProperties;
 
     private final SipMessageResponseHandler sipMessageResponseHandler;
+
+    @Autowired
+    private DeviceCacheOperatorModel deviceCacheOperatorModel;
 
     public DeviceServiceImpl(SipRegisterResponse sipRegisterResponse, SipServerProperties sipServerProperties,
                              SipMessageResponseHandler sipMessageResponseHandler) {
@@ -57,7 +62,10 @@ public class DeviceServiceImpl implements DeviceService {
         //取得设备信息后注册
         log.info("设备ID {}, {}, {}", registerMessageEvent.getDeviceId(), registerMessageEvent.getHost(), registerMessageEvent.getPort());
         //从Redis中获取已注册设备,如果不存在则表示第一次注册,并发起查询设备信息指令
-
+        boolean isFirst = deviceCacheOperatorModel.isFirstRegister(registerMessageEvent);
+        if (isFirst) {
+            log.info("第一次注册,需要下发查询设备信息指令");
+        }
         sendResponse(requestEvent, response);
     }
 
