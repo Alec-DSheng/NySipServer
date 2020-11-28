@@ -30,14 +30,14 @@ public class DeviceServiceImpl implements DeviceService {
 
     private final SipMessageResponseHandler sipMessageResponseHandler;
 
-    @Autowired
-    private DeviceCacheOperatorModel deviceCacheOperatorModel;
+    private final DeviceCacheOperatorModel deviceCacheOperatorModel;
 
     public DeviceServiceImpl(SipRegisterResponse sipRegisterResponse, SipServerProperties sipServerProperties,
-                             SipMessageResponseHandler sipMessageResponseHandler) {
+                             SipMessageResponseHandler sipMessageResponseHandler, DeviceCacheOperatorModel deviceCacheOperatorModel) {
         this.sipRegisterResponse = sipRegisterResponse;
         this.sipServerProperties = sipServerProperties;
         this.sipMessageResponseHandler = sipMessageResponseHandler;
+        this.deviceCacheOperatorModel = deviceCacheOperatorModel;
     }
 
 
