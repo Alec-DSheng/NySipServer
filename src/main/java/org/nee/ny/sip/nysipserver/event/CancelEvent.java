@@ -1,6 +1,7 @@
 package org.nee.ny.sip.nysipserver.event;
 
 import lombok.extern.slf4j.Slf4j;
+import org.nee.ny.sip.nysipserver.domain.intefaces.MessageHandler;
 
 /**
  * @Author: alec
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date: 08:46 2020-11-30
  */
 @Slf4j
+@MessageHandler(name = "CANCEL")
 public class CancelEvent extends MessageEventAbstract {
 
     @Override

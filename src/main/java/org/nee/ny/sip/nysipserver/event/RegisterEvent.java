@@ -5,6 +5,7 @@ import gov.nist.javax.sip.address.SipUri;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.nee.ny.sip.nysipserver.domain.intefaces.MessageHandler;
 import org.nee.ny.sip.nysipserver.utils.MD5Util;
 
 import javax.sip.header.AuthorizationHeader;
@@ -21,6 +22,7 @@ import java.util.Objects;
 @Slf4j
 @Setter
 @Getter
+@MessageHandler(name = "REGISTER")
 public class RegisterEvent extends MessageEventAbstract {
 
     //是否首次认证

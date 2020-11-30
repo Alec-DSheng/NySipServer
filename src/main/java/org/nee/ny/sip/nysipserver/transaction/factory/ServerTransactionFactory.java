@@ -10,6 +10,7 @@ import javax.sip.*;
 import javax.sip.header.CallIdHeader;
 import javax.sip.header.ViaHeader;
 import javax.sip.message.Request;
+import java.rmi.NotBoundException;
 import java.util.Optional;
 
 /**
@@ -31,8 +32,12 @@ public class ServerTransactionFactory {
         String transport = reqViaHeader.getTransport();
         if (TransportType.TCP.name().equals(transport)) {
             return getServerTransaction(sipTcpProvider, request);
+        } else if (TransportType.UDP.name().equals(transport)) {
+            return getServerTransaction(sipUdpProvider, request);
+        } else {
+            return null;
         }
-        return getServerTransaction(sipUdpProvider, request);
+
     }
 
 

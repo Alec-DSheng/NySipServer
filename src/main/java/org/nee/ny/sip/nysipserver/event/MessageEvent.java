@@ -2,6 +2,7 @@ package org.nee.ny.sip.nysipserver.event;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.nee.ny.sip.nysipserver.domain.intefaces.MessageHandler;
 
 /**
  * @Author: alec
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date: 11:53 2020-11-28
  */
 @Slf4j
+@MessageHandler(name = "MESSAGE")
 public class MessageEvent extends MessageEventAbstract {
 
     @Override
