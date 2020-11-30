@@ -1,18 +1,18 @@
 package org.nee.ny.sip.nysipserver.event;
 
-
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Author: alec
  * Description:
- * @date: 11:53 2020-11-28
+ * @date: 08:45 2020-11-30
  */
 @Slf4j
-public class MessageEvent extends MessageEventAbstract {
+public class ByeEvent extends MessageEventAbstract {
 
     @Override
     public void load() {
-        log.info("接收到设备上报 message 消息, 需要进行分类处理");
+        log.info("接收到设备上报 ByeEvent 消息, 需要进行分类处理");
     }
 }
+

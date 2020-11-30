@@ -1,7 +1,7 @@
 package org.nee.ny.sip.nysipserver.listeners;
 
 import lombok.extern.slf4j.Slf4j;
-import org.nee.ny.sip.nysipserver.event.MessageEvent;
+import org.nee.ny.sip.nysipserver.event.MessageEventAbstract;
 import org.nee.ny.sip.nysipserver.listeners.factory.MessageEventFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -29,8 +29,8 @@ public class SipServerListeners implements SipListener {
     public void processRequest(RequestEvent requestEvent) {
         Request request = requestEvent.getRequest();
         log.info("listeners request method {}", request.getMethod());
-        MessageEvent messageEvent = MessageEventFactory.getInstance().getMessageEvent(requestEvent);
-        publisher.publishEvent(messageEvent);
+        MessageEventAbstract messageEventAbstract = MessageEventFactory.getInstance().getMessageEvent(requestEvent);
+        publisher.publishEvent(messageEventAbstract);
     }
 
     @Override

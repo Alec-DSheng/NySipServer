@@ -2,12 +2,11 @@ package org.nee.ny.sip.nysipserver.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.configuration.SipServerProperties;
-import org.nee.ny.sip.nysipserver.event.RegisterMessageEvent;
+import org.nee.ny.sip.nysipserver.event.RegisterEvent;
 import org.nee.ny.sip.nysipserver.model.DeviceCacheOperatorModel;
 import org.nee.ny.sip.nysipserver.service.DeviceService;
 import org.nee.ny.sip.nysipserver.transaction.response.SipRegisterResponse;
 import org.nee.ny.sip.nysipserver.transaction.response.impl.SipMessageResponseHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
@@ -49,20 +48,20 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @EventListener
-    public void deviceRegister(RegisterMessageEvent registerMessageEvent) {
-        RequestEvent requestEvent =  registerMessageEvent.getRequestEvent();
+    public void deviceRegister(RegisterEvent registerEvent) {
+        RequestEvent requestEvent =  registerEvent.getRequestEvent();
         Response response;
-        if (registerMessageEvent.getFirstAuthorization() ||
-                !registerMessageEvent.validateAuthorization(sipServerProperties.getPassword())) {
+        if (registerEvent.getFirstAuthorization() ||
+                !registerEvent.validateAuthorization(sipServerProperties.getPassword())) {
             response = sipRegisterResponse.responseAuthenticationFailure(requestEvent.getRequest());
             sendResponse(requestEvent, response);
             return;
         }
         response = sipRegisterResponse.responseAuthenticationSuccess(requestEvent.getRequest());
         //取得设备信息后注册
-        log.info("设备ID {}, {}, {}", registerMessageEvent.getDeviceId(), registerMessageEvent.getHost(), registerMessageEvent.getPort());
+        log.info("设备ID {}, {}, {}", registerEvent.getDeviceId(), registerEvent.getHost(), registerEvent.getPort());
         //从Redis中获取已注册设备,如果不存在则表示第一次注册,并发起查询设备信息指令
-        boolean isFirst = deviceCacheOperatorModel.isFirstRegister(registerMessageEvent);
+        boolean isFirst = deviceCacheOperatorModel.isFirstRegister(registerEvent);
         if (isFirst) {
             log.info("第一次注册,需要下发查询设备信息指令");
         }
