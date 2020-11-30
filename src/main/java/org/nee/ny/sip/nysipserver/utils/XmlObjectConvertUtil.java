@@ -6,8 +6,6 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import javax.sip.RequestEvent;
-import javax.sip.message.Request;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -26,7 +24,6 @@ public class XmlObjectConvertUtil {
 
     public static Object xmlConvertObject (String xml, Object obj) {
         try {
-            log.info("xml {}", xml);
             JAXBContext context = JAXBContext.newInstance(obj.getClass());
             Unmarshaller unmarshaller = context.createUnmarshaller();
             StringReader sr = new StringReader(xml);

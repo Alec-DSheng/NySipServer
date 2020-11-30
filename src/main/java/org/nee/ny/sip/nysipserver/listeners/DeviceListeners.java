@@ -3,7 +3,10 @@ package org.nee.ny.sip.nysipserver.listeners;
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.configuration.SipServerProperties;
 import org.nee.ny.sip.nysipserver.event.*;
+import org.nee.ny.sip.nysipserver.event.message.MessageRequestAbstract;
+import org.nee.ny.sip.nysipserver.listeners.factory.MessageEventFactory;
 import org.nee.ny.sip.nysipserver.model.DeviceCacheOperatorModel;
+import org.nee.ny.sip.nysipserver.service.DeviceService;
 import org.nee.ny.sip.nysipserver.transaction.response.SipRegisterResponse;
 import org.nee.ny.sip.nysipserver.transaction.response.impl.SipMessageResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +15,10 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import javax.sip.RequestEvent;
+import javax.sip.message.MessageFactory;
+import javax.sip.message.Request;
 import javax.sip.message.Response;
+import java.text.ParseException;
 
 /**
  * @Author: alec
@@ -34,6 +40,12 @@ public class DeviceListeners {
     @Autowired
     private ApplicationEventPublisher publisher;
 
+    @Autowired
+    private MessageFactory messageFactory;
+
+    @Autowired
+    private DeviceService deviceService;
+
     public DeviceListeners(SipRegisterResponse sipRegisterResponse, SipServerProperties sipServerProperties,
                            SipMessageResponseHandler sipMessageResponseHandler, DeviceCacheOperatorModel deviceCacheOperatorModel) {
         this.sipRegisterResponse = sipRegisterResponse;
@@ -46,30 +58,43 @@ public class DeviceListeners {
     public void deviceRegister(RegisterEvent registerEvent) {
         RequestEvent requestEvent =  registerEvent.getRequestEvent();
         Response response;
-        if (registerEvent.getFirstAuthorization() ||
-                !registerEvent.validateAuthorization(sipServerProperties.getPassword())) {
+        if (!registerEvent.validateAuthorization(sipServerProperties.getPassword())) {
             response = sipRegisterResponse.responseAuthenticationFailure(requestEvent.getRequest());
             sendResponse(requestEvent, response);
             return;
         }
         response = sipRegisterResponse.responseAuthenticationSuccess(requestEvent.getRequest());
-        //取得设备信息后注册
         log.info("设备ID {}, {}, {}", registerEvent.getDeviceId(), registerEvent.getHost(), registerEvent.getPort());
-        //从Redis中获取已注册设备,如果不存在则表示第一次注册,并发起查询设备信息指令
-        boolean isFirst = deviceCacheOperatorModel.isFirstRegister(registerEvent);
-        if (isFirst) {
-            log.info("第一次注册,需要下发查询设备信息指令");
-        }
         sendResponse(requestEvent, response);
+        boolean isFirst = deviceCacheOperatorModel.isFirstRegister(registerEvent);
+        if (registerEvent.getDestroy()) {
+            log.info("设备注销 {}", registerEvent.getDeviceId());
+            deviceService.dealDeviceDestory(registerEvent.getDeviceId());
+            return;
+        }
+        if (isFirst) {
+            log.info("设备初次注册 {}", registerEvent.getDeviceId());
+            deviceService.dealDeviceRegister(registerEvent.getDeviceId());
+            return;
+        }
+        log.info("设备重新注册产生心跳 {}", registerEvent.getDeviceId());
+        deviceService.dealDeviceOnline(registerEvent.getDeviceId());
     }
 
 
     @EventListener
     public void deviceMessage(MessageEvent messageEvent) {
-        log.info("监听到message");
-
-   //      publisher.publishEvent(messageRequest);
-//            sendAck();
+        RequestEvent requestEvent = messageEvent.getRequestEvent();
+        Response response;
+        try {
+            MessageRequestAbstract messageRequestAbstract = MessageEventFactory.getInstance()
+                    .getMessageRequest(messageEvent.cmdType, requestEvent);
+            publisher.publishEvent(messageRequestAbstract);
+            response = messageFactory.createResponse(Response.OK, requestEvent.getRequest());
+            sendResponse(requestEvent, response);
+        } catch (ParseException e) {
+            log.error("响应response 错误", e);
+        }
     }
 
     @EventListener

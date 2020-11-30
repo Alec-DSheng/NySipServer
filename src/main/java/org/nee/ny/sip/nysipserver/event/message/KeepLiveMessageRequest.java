@@ -32,7 +32,6 @@ public class KeepLiveMessageRequest extends MessageRequestAbstract {
     public void load() {
         super.load();
         String content = this.content;
-        //KeepLiveMessageRequest keepLiveMessageRequest = new KeepLiveMessageRequest();
         this.messageRequestAbstract = (KeepLiveMessageRequest) XmlObjectConvertUtil.xmlConvertObject(content, this);
     }
 

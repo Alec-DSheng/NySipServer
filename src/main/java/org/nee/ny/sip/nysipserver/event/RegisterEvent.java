@@ -2,6 +2,7 @@ package org.nee.ny.sip.nysipserver.event;
 
 
 import gov.nist.javax.sip.address.SipUri;
+import gov.nist.javax.sip.header.Expires;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -9,10 +10,12 @@ import org.nee.ny.sip.nysipserver.domain.intefaces.MessageHandler;
 import org.nee.ny.sip.nysipserver.utils.MD5Util;
 
 import javax.sip.header.AuthorizationHeader;
+import javax.sip.header.ExpiresHeader;
 import javax.sip.header.FromHeader;
 import javax.sip.header.ViaHeader;
 import javax.sip.message.Request;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @Author: alec
@@ -25,8 +28,7 @@ import java.util.Objects;
 @MessageHandler(name = "REGISTER")
 public class RegisterEvent extends MessageEventAbstract {
 
-    //是否首次认证
-    private Boolean firstAuthorization = true;
+    private Boolean destroy = false;
 
     private  AuthorizationHeader authHeader;
 
@@ -43,12 +45,7 @@ public class RegisterEvent extends MessageEventAbstract {
     public void load() {
         Request request = requestEvent.getRequest();
         //加载注册相关属性事件
-        AuthorizationHeader authHeader = (AuthorizationHeader) request.getHeader(AuthorizationHeader.NAME);
-        if (Objects.isNull(authHeader)) {
-            return;
-        }
-        this.authHeader = authHeader;
-        this.firstAuthorization = false;
+        this.authHeader = (AuthorizationHeader) request.getHeader(AuthorizationHeader.NAME);
         FromHeader fromHeader = (FromHeader) request.getHeader(FromHeader.NAME);
         ViaHeader viaHeader = (ViaHeader) request.getHeader(ViaHeader.NAME);
         SipUri uri = (SipUri)  fromHeader.getAddress().getURI();
@@ -56,9 +53,16 @@ public class RegisterEvent extends MessageEventAbstract {
         this.host = viaHeader.getHost();
         this.port = viaHeader.getPort();
         this.transport = viaHeader.getTransport();
+
+        ExpiresHeader expiresHeader = (ExpiresHeader) request.getHeader(Expires.NAME);
+        int expires  = Optional.of(expiresHeader.getExpires()).orElse(1);
+        this.destroy = expires ==0;
     }
 
     public Boolean validateAuthorization(String password) {
+        if (Objects.isNull(authHeader)) {
+            return false;
+        }
         String validateFrom = String.format("%s:%s:%s", authHeader.getUsername(), authHeader.getRealm(), password);
         String hlxFrom = MD5Util.md5Password(validateFrom);
 
