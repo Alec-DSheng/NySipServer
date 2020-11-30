@@ -1,6 +1,8 @@
 package org.nee.ny.sip.nysipserver.service;
 
 
+import org.nee.ny.sip.nysipserver.event.RegisterEvent;
+
 /**
  * @Author: alec
  * Description:
@@ -11,7 +13,7 @@ public interface DeviceService {
     /**
      * 设备注册
      * */
-    void dealDeviceRegister(String deviceNo);
+    void dealDeviceRegister(RegisterEvent registerEvent);
 
     /**
      * 设备上线
@@ -26,5 +28,5 @@ public interface DeviceService {
     /**
      * 设备注销
      * */
-    void dealDeviceDestory(String deviceNo);
+    void dealDeviceDestroy(String deviceNo);
 }

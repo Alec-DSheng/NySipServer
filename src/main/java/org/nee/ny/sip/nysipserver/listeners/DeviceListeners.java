@@ -2,6 +2,7 @@ package org.nee.ny.sip.nysipserver.listeners;
 
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.configuration.SipServerProperties;
+import org.nee.ny.sip.nysipserver.domain.Device;
 import org.nee.ny.sip.nysipserver.event.*;
 import org.nee.ny.sip.nysipserver.event.message.MessageRequestAbstract;
 import org.nee.ny.sip.nysipserver.listeners.factory.MessageEventFactory;
@@ -61,6 +62,8 @@ public class DeviceListeners {
         if (!registerEvent.validateAuthorization(sipServerProperties.getPassword())) {
             response = sipRegisterResponse.responseAuthenticationFailure(requestEvent.getRequest());
             sendResponse(requestEvent, response);
+            log.info("设备下线 {}", registerEvent.getDeviceId());
+            deviceService.dealDeviceOffline(registerEvent.getDeviceId());
             return;
         }
         response = sipRegisterResponse.responseAuthenticationSuccess(requestEvent.getRequest());
@@ -69,12 +72,12 @@ public class DeviceListeners {
         boolean isFirst = deviceCacheOperatorModel.isFirstRegister(registerEvent);
         if (registerEvent.getDestroy()) {
             log.info("设备注销 {}", registerEvent.getDeviceId());
-            deviceService.dealDeviceDestory(registerEvent.getDeviceId());
+            deviceService.dealDeviceDestroy(registerEvent.getDeviceId());
             return;
         }
         if (isFirst) {
             log.info("设备初次注册 {}", registerEvent.getDeviceId());
-            deviceService.dealDeviceRegister(registerEvent.getDeviceId());
+            deviceService.dealDeviceRegister(registerEvent);
             return;
         }
         log.info("设备重新注册产生心跳 {}", registerEvent.getDeviceId());
