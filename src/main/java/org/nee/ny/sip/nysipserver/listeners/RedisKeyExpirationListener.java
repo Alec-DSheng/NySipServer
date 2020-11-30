@@ -29,9 +29,9 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
     public void onMessage(Message message, byte[] pattern) {
        String expKey = message.toString();
        log.info("失效key {}", expKey);
-       if (expKey.startsWith(DeviceCommonKey.deviceNo)) {
+       if (expKey.startsWith(DeviceCommonKey.heart)) {
            //处理下线
-           String deviceNo = expKey.substring(DeviceCommonKey.deviceNo.length());
+           String deviceNo = expKey.substring(DeviceCommonKey.heart.length());
            deviceService.dealDeviceOffline(deviceNo);
        }
     }

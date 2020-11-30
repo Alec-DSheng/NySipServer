@@ -7,5 +7,7 @@ package org.nee.ny.sip.nysipserver.domain;
  */
 public interface DeviceCommonKey {
 
-    String deviceNo = "D_NO:";
+    String deviceNo = "D_NO:"; //记录设备初次注册
+
+    String heart = "H_NO:"; //记录设备心跳
 }

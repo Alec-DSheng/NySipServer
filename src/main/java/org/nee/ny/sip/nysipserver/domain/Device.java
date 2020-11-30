@@ -5,14 +5,21 @@ import lombok.*;
 /**
  * @Author: alec
  * Description:
- * @date: 11:31 2020-11-27
+ * @date: 19:41 2020-11-30
  */
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class DeviceInfo {
+@Builder
+public class Device {
 
+    private String deviceId;
 
+    private String transport;
+
+    private String host;
+
+    private Integer port;
 }
