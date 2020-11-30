@@ -6,10 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.utils.MD5Util;
-import org.springframework.util.StringUtils;
-import sun.security.provider.MD5;
 
-import javax.sip.address.URI;
 import javax.sip.header.AuthorizationHeader;
 import javax.sip.header.FromHeader;
 import javax.sip.header.ViaHeader;
@@ -24,7 +21,7 @@ import java.util.Objects;
 @Slf4j
 @Setter
 @Getter
-public class RegisterMessageEvent extends MessageEvent {
+public class RegisterEvent extends MessageEventAbstract {
 
     //是否首次认证
     private Boolean firstAuthorization = true;

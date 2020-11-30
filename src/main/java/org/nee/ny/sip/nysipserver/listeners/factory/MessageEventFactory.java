@@ -1,9 +1,8 @@
 package org.nee.ny.sip.nysipserver.listeners.factory;
 
 
-import org.nee.ny.sip.nysipserver.event.DeviceMessageEvent;
-import org.nee.ny.sip.nysipserver.event.MessageEvent;
-import org.nee.ny.sip.nysipserver.event.RegisterMessageEvent;
+import org.nee.ny.sip.nysipserver.domain.enums.EventType;
+import org.nee.ny.sip.nysipserver.event.*;
 
 import javax.sip.RequestEvent;
 import java.util.Map;
@@ -19,21 +18,26 @@ public class MessageEventFactory {
 
     private static MessageEventFactory messageEventFactory = new MessageEventFactory();
 
-    private static Map<String, MessageEvent> messageEventMap;
+    private static Map<String, MessageEventAbstract> messageEventMap;
 
     private MessageEventFactory(){
         messageEventMap = new ConcurrentHashMap<>();
-        messageEventMap.put("REGISTER", new RegisterMessageEvent());
-        messageEventMap.put("MESSAGE", new DeviceMessageEvent());
+        messageEventMap.put(EventType.REGISTER.name(), new RegisterEvent());
+        messageEventMap.put(EventType.MEESSAGE.name(), new MessageEvent());
+        messageEventMap.put(EventType.ACK.name(), new AckEvent());
+        messageEventMap.put(EventType.BYE.name(), new ByeEvent());
+        messageEventMap.put(EventType.INVITE.name(), new InviteEvent());
+        messageEventMap.put(EventType.CANCEL.name(), new CancelEvent());
+        messageEventMap.put(EventType.SUBSCRIBE.name(), new SubscribeEvent());
     }
 
 
-    public MessageEvent getMessageEvent (RequestEvent requestEvent) {
+    public MessageEventAbstract getMessageEvent (RequestEvent requestEvent) {
         String method = requestEvent.getRequest().getMethod();
-        MessageEvent messageEvent = Optional.ofNullable(messageEventMap.get(method))
+        MessageEventAbstract messageEventAbstract = Optional.ofNullable(messageEventMap.get(method))
                 .orElseThrow(NullPointerException::new);
-        messageEvent.init(requestEvent);
-        return messageEvent;
+        messageEventAbstract.init(requestEvent);
+        return messageEventAbstract;
     }
 
     public static MessageEventFactory getInstance() {
