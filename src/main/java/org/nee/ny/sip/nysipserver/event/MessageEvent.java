@@ -29,4 +29,8 @@ public class MessageEvent extends MessageEventAbstract {
         this.messageRequestBean = (MessageRequestBean) XmlObjectConvertUtil.xmlConvertObject(content, messageRequestBean);
         log.info("接收到设备上报 message 消息, 需要进行分类处理 {}" ,this.messageRequestBean);
     }
+
+    public void dealMessageEvent() {
+
+    }
 }
