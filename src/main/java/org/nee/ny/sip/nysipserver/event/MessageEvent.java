@@ -3,11 +3,12 @@ package org.nee.ny.sip.nysipserver.event;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
 import org.nee.ny.sip.nysipserver.domain.intefaces.MessageHandler;
-import org.nee.ny.sip.nysipserver.event.message.MessageRequestBean;
+import org.nee.ny.sip.nysipserver.event.message.MessageRequestAbstract;
+import org.nee.ny.sip.nysipserver.listeners.factory.MessageEventFactory;
 import org.nee.ny.sip.nysipserver.utils.XmlObjectConvertUtil;
-
-import javax.sip.message.Request;
 
 /**
  * @Author: alec
@@ -18,19 +19,20 @@ import javax.sip.message.Request;
 @MessageHandler(name = "MESSAGE")
 public class MessageEvent extends MessageEventAbstract {
 
-    @Getter
-    private MessageRequestBean messageRequestBean;
+    private final static String CMD_FIELD = "CmdType";
 
     @Override
     public void load() {
-        Request request = requestEvent.getRequest();
-        String content = new String(request.getRawContent());
-        MessageRequestBean messageRequestBean = new MessageRequestBean();
-        this.messageRequestBean = (MessageRequestBean) XmlObjectConvertUtil.xmlConvertObject(content, messageRequestBean);
-        log.info("接收到设备上报 message 消息, 需要进行分类处理 {}" ,this.messageRequestBean);
+        try {
+            Element element = XmlObjectConvertUtil.getRootElement(requestEvent.getRequest().getRawContent());
+            String cmdType = XmlObjectConvertUtil.getText(element,CMD_FIELD);
+            log.info("Message 监听到消息,消息类型 {}", cmdType);
+            MessageRequestAbstract messageRequest = MessageEventFactory.getInstance().getMessageRequest(cmdType, requestEvent);
+//            publisher.publishEvent(messageRequest);
+//            sendAck();
+        } catch (DocumentException e) {
+            log.error("解析消息错误", e);
+        }
     }
 
-    public void dealMessageEvent() {
-
-    }
 }
