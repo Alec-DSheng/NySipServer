@@ -6,6 +6,8 @@ import org.nee.ny.sip.nysipserver.event.*;
 import org.nee.ny.sip.nysipserver.model.DeviceCacheOperatorModel;
 import org.nee.ny.sip.nysipserver.transaction.response.SipRegisterResponse;
 import org.nee.ny.sip.nysipserver.transaction.response.impl.SipMessageResponseHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +30,9 @@ public class DeviceListeners {
     private final SipMessageResponseHandler sipMessageResponseHandler;
 
     private final DeviceCacheOperatorModel deviceCacheOperatorModel;
+
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     public DeviceListeners(SipRegisterResponse sipRegisterResponse, SipServerProperties sipServerProperties,
                            SipMessageResponseHandler sipMessageResponseHandler, DeviceCacheOperatorModel deviceCacheOperatorModel) {
@@ -62,6 +67,9 @@ public class DeviceListeners {
     @EventListener
     public void deviceMessage(MessageEvent messageEvent) {
         log.info("监听到message");
+
+   //      publisher.publishEvent(messageRequest);
+//            sendAck();
     }
 
     @EventListener

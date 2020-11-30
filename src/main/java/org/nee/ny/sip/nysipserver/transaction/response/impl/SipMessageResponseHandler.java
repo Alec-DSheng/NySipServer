@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.transaction.factory.ServerTransactionFactory;
 import org.nee.ny.sip.nysipserver.transaction.response.MessageResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.sip.*;
@@ -23,7 +24,8 @@ public class SipMessageResponseHandler implements MessageResponseHandler {
 
     private final SipProvider sipUdpProvider;
 
-    public SipMessageResponseHandler(SipProvider sipTcpProvider, SipProvider sipUdpProvider) {
+    public SipMessageResponseHandler(@Autowired @Qualifier(value = "sipTcpProvider") SipProvider sipTcpProvider,
+                                     @Autowired @Qualifier(value = "sipUdpProvider") SipProvider sipUdpProvider) {
         this.sipTcpProvider = sipTcpProvider;
         this.sipUdpProvider = sipUdpProvider;
     }
