@@ -2,7 +2,6 @@ package org.nee.ny.sip.nysipserver.listeners.factory;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.nee.ny.sip.nysipserver.domain.enums.EventType;
 import org.nee.ny.sip.nysipserver.domain.intefaces.MessageHandler;
 import org.nee.ny.sip.nysipserver.event.*;
 import org.reflections.Reflections;
@@ -25,9 +24,13 @@ public class MessageEventFactory {
 
     private static MessageEventFactory messageEventFactory = new MessageEventFactory();
 
-    private static Map<String, MessageEventAbstract> messageEventMap = new ConcurrentHashMap<>();
+    private static final Map<String, MessageEventAbstract> messageEventMap = new ConcurrentHashMap<>();
 
     private MessageEventFactory(){
+
+    }
+
+    static {
         Reflections reflections = new Reflections(basePackage);
         try {
             Set<Class<?>> classes = reflections.getTypesAnnotatedWith(MessageHandler.class);

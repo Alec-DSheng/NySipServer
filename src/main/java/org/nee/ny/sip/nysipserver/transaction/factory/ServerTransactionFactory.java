@@ -10,7 +10,6 @@ import javax.sip.*;
 import javax.sip.header.CallIdHeader;
 import javax.sip.header.ViaHeader;
 import javax.sip.message.Request;
-import java.rmi.NotBoundException;
 import java.util.Optional;
 
 /**

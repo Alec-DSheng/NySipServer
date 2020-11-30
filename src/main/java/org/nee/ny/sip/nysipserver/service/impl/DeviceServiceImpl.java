@@ -47,29 +47,29 @@ public class DeviceServiceImpl implements DeviceService {
 
     }
 
-    @EventListener
-    public void deviceRegister(RegisterEvent registerEvent) {
-        RequestEvent requestEvent =  registerEvent.getRequestEvent();
-        Response response;
-        if (registerEvent.getFirstAuthorization() ||
-                !registerEvent.validateAuthorization(sipServerProperties.getPassword())) {
-            response = sipRegisterResponse.responseAuthenticationFailure(requestEvent.getRequest());
-            sendResponse(requestEvent, response);
-            return;
-        }
-        response = sipRegisterResponse.responseAuthenticationSuccess(requestEvent.getRequest());
-        //取得设备信息后注册
-        log.info("设备ID {}, {}, {}", registerEvent.getDeviceId(), registerEvent.getHost(), registerEvent.getPort());
-        //从Redis中获取已注册设备,如果不存在则表示第一次注册,并发起查询设备信息指令
-        boolean isFirst = deviceCacheOperatorModel.isFirstRegister(registerEvent);
-        if (isFirst) {
-            log.info("第一次注册,需要下发查询设备信息指令");
-        }
-        sendResponse(requestEvent, response);
-    }
-
-    private void sendResponse(RequestEvent requestEvent, Response response) {
-        sipMessageResponseHandler.sendResponse(requestEvent, response);
-    }
+//    @EventListener
+//    public void deviceRegister(RegisterEvent registerEvent) {
+//        RequestEvent requestEvent =  registerEvent.getRequestEvent();
+//        Response response;
+//        if (registerEvent.getFirstAuthorization() ||
+//                !registerEvent.validateAuthorization(sipServerProperties.getPassword())) {
+//            response = sipRegisterResponse.responseAuthenticationFailure(requestEvent.getRequest());
+//            sendResponse(requestEvent, response);
+//            return;
+//        }
+//        response = sipRegisterResponse.responseAuthenticationSuccess(requestEvent.getRequest());
+//        //取得设备信息后注册
+//        log.info("设备ID {}, {}, {}", registerEvent.getDeviceId(), registerEvent.getHost(), registerEvent.getPort());
+//        //从Redis中获取已注册设备,如果不存在则表示第一次注册,并发起查询设备信息指令
+//        boolean isFirst = deviceCacheOperatorModel.isFirstRegister(registerEvent);
+//        if (isFirst) {
+//            log.info("第一次注册,需要下发查询设备信息指令");
+//        }
+//        sendResponse(requestEvent, response);
+//    }
+//
+//    private void sendResponse(RequestEvent requestEvent, Response response) {
+//        sipMessageResponseHandler.sendResponse(requestEvent, response);
+//    }
 
 }
