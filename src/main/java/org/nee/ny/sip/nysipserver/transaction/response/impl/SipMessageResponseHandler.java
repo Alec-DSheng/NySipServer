@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.sip.*;
+import javax.sip.message.Request;
 import javax.sip.message.Response;
 import java.util.Optional;
 
@@ -42,5 +43,19 @@ public class SipMessageResponseHandler implements MessageResponseHandler {
         } catch (SipException | InvalidArgumentException e) {
             log.error("发送消息失败", e);
         }
+    }
+
+    @Override
+    public ClientTransaction sendResponse(String transport, Request request) {
+        try {
+            log.info("transport {}", transport);
+            ClientTransaction clientTransaction = ServerTransactionFactory.getInstance().
+                    getClientTransaction(sipTcpProvider, sipUdpProvider, transport,request);
+            clientTransaction.sendRequest();
+            return clientTransaction;
+        } catch (SipException e) {
+            log.error("发送请求错误", e);
+        }
+        return null;
     }
 }

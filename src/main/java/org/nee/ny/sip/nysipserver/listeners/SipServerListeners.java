@@ -39,7 +39,7 @@ public class SipServerListeners implements SipListener {
     @Override
     public void processResponse(ResponseEvent responseEvent) {
         Response response = responseEvent.getResponse();
-        log.info("listeners response StatusCode {}", response.getStatusCode());
+        log.info("listeners response StatusCode {}, {}", response.getStatusCode(), response.getContent().toString());
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.nee.ny.sip.nysipserver.model;
 
 import lombok.extern.slf4j.Slf4j;
+import org.nee.ny.sip.nysipserver.domain.Device;
 import org.nee.ny.sip.nysipserver.domain.DeviceCommonKey;
 import org.nee.ny.sip.nysipserver.event.RegisterEvent;
 import org.nee.ny.sip.nysipserver.utils.DateUtil;
@@ -31,13 +32,28 @@ public class DeviceCacheOperatorModel {
         redisTemplate.delete(key);
     }
 
+    public Device getDevice(String deviceNo) {
+       String key = DeviceCommonKey.deviceNo + deviceNo;
+       String value = redisTemplate.opsForValue().get(key);
+       if (StringUtils.hasLength(value)) {
+           String[] hostPorts = value.split(":");
+           if (hostPorts.length == 3) {
+               return Device.builder().deviceId(deviceNo).host(hostPorts[0])
+                       .port(Integer.parseInt(hostPorts[1]))
+                       .transport(hostPorts[2]).build();
+           }
+           return null;
+       }
+       return null;
+    }
+
     public boolean isFirstRegister(RegisterEvent registerEvent) {
         String key = DeviceCommonKey.deviceNo + registerEvent.getDeviceId();
         String value = redisTemplate.opsForValue().get(key);
         boolean hasValue = StringUtils.hasLength(value);
         if (!hasValue) {
-            redisTemplate.opsForValue().set(key, String.format("%s:%s", registerEvent.getHost(),
-                    registerEvent.getPort()));
+            redisTemplate.opsForValue().set(key, String.format("%s:%s:%s", registerEvent.getHost(),
+                    registerEvent.getPort(), registerEvent.getTransport()));
         }
         return !hasValue;
     }

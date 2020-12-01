@@ -1,6 +1,7 @@
 package org.nee.ny.sip.nysipserver.service;
 
 
+import org.nee.ny.sip.nysipserver.domain.DeviceInfo;
 import org.nee.ny.sip.nysipserver.event.RegisterEvent;
 
 /**
@@ -11,7 +12,7 @@ import org.nee.ny.sip.nysipserver.event.RegisterEvent;
 public interface DeviceService {
 
     /**
-     * 设备注册
+     * 设备注册dealReportDeviceProperty
      * */
     void dealDeviceRegister(RegisterEvent registerEvent);
 
@@ -29,4 +30,9 @@ public interface DeviceService {
      * 设备注销
      * */
     void dealDeviceDestroy(String deviceNo);
+
+    /**
+     * 设备属性上报
+     * */
+    void dealReportDeviceProperty(DeviceInfo deviceInfo);
 }

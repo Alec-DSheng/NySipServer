@@ -3,12 +3,16 @@ package org.nee.ny.sip.nysipserver.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.domain.Device;
 import org.nee.ny.sip.nysipserver.domain.DeviceCommonKey;
+import org.nee.ny.sip.nysipserver.domain.DeviceInfo;
 import org.nee.ny.sip.nysipserver.event.RegisterEvent;
 import org.nee.ny.sip.nysipserver.model.DeviceCacheOperatorModel;
 import org.nee.ny.sip.nysipserver.service.DeviceService;
+import org.nee.ny.sip.nysipserver.transaction.command.message.CatalogQueryCommand;
+import org.nee.ny.sip.nysipserver.transaction.command.message.DeviceInfoQueryCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.*;
 
 
 /**
@@ -22,8 +26,15 @@ public class DeviceServiceImpl implements DeviceService {
 
     private final DeviceCacheOperatorModel deviceCacheOperatorModel;
 
-    public DeviceServiceImpl(DeviceCacheOperatorModel deviceCacheOperatorModel) {
+    private final DeviceInfoQueryCommand deviceInfoQueryCommand;
+
+    private final CatalogQueryCommand catalogQueryCommand;
+
+    public DeviceServiceImpl(DeviceCacheOperatorModel deviceCacheOperatorModel, DeviceInfoQueryCommand deviceInfoQueryCommand,
+                             CatalogQueryCommand catalogQueryCommand) {
         this.deviceCacheOperatorModel = deviceCacheOperatorModel;
+        this.deviceInfoQueryCommand = deviceInfoQueryCommand;
+        this.catalogQueryCommand = catalogQueryCommand;
     }
 
     /**
@@ -36,7 +47,7 @@ public class DeviceServiceImpl implements DeviceService {
         .host(registerEvent.getHost())
         .port(registerEvent.getPort())
         .transport(registerEvent.getTransport()).build();
-       log.info("下发查询设备指令{}", device);
+        deviceInfoQueryCommand.sendCommand(device);
     }
 
     /**
@@ -73,6 +84,23 @@ public class DeviceServiceImpl implements DeviceService {
         deviceCacheOperatorModel.deleteValue(heartKey);
         deviceCacheOperatorModel.deleteValue(deviceKey);
         dealDeviceOffline(deviceNo);
+    }
+
+    @Override
+    public void dealReportDeviceProperty(DeviceInfo deviceInfo) {
+        //从缓存去除设备信息
+//        Optional.ofNullable(deviceCacheOperatorModel.getDevice(deviceInfo.getDeviceId()))
+//                .ifPresent(device -> {
+//                    deviceInfo.setHost(device.getHost());
+//                    deviceInfo.setPort(device.getPort());
+//                    deviceInfo.setTransport(device.getTransport());
+//                    //写入kafka 数据
+//                    //catalogQueryCommand.sendCommand(device);
+//                });
+        Device device = deviceCacheOperatorModel.getDevice(deviceInfo.getDeviceId());
+        if (Objects.nonNull(device)) {
+            deviceInfoQueryCommand.sendCommand(device);
+        }
     }
 
 }
