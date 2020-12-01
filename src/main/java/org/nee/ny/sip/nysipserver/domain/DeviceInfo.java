@@ -2,6 +2,8 @@ package org.nee.ny.sip.nysipserver.domain;
 
 import lombok.*;
 
+import java.io.Serializable;
+
 /**
  * @Author: alec
  * Description:
@@ -11,8 +13,26 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @ToString
-public class DeviceInfo {
+public class DeviceInfo implements Serializable {
 
+    private String deviceId;
+
+    private String deviceName;
+
+    private String manufacturer;
+
+    private String model;
+
+    private String firmware;
+
+    private Integer channel;
+
+    private String host;
+
+    private String transport;
+
+    private Integer port;
 
 }

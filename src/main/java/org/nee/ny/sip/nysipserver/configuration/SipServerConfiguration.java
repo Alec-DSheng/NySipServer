@@ -66,8 +66,8 @@ public class SipServerConfiguration {
 
     @Bean
     public SipProvider sipTcpProvider(SipStack sipStack) throws InvalidArgumentException,
-            TransportNotSupportedException, ObjectInUseException, TooManyListenersException, UnknownHostException {
-        ListeningPoint tcpListeningPoint = sipStack.createListeningPoint(getIp(),
+            TransportNotSupportedException, ObjectInUseException, TooManyListenersException {
+        ListeningPoint tcpListeningPoint = sipStack.createListeningPoint(sipServerProperties.getHost(),
                 sipServerProperties.getPort(), ListeningPoint.TCP);
         SipProvider sipProvider = sipStack.createSipProvider(tcpListeningPoint);
         sipProvider.addSipListener(sipServerListeners);
@@ -76,8 +76,8 @@ public class SipServerConfiguration {
     }
     @Bean
     public SipProvider sipUdpProvider(SipStack sipStack) throws InvalidArgumentException,
-            TransportNotSupportedException, ObjectInUseException, TooManyListenersException, UnknownHostException {
-        ListeningPoint udpListeningPoint = sipStack.createListeningPoint(getIp(),
+            TransportNotSupportedException, ObjectInUseException, TooManyListenersException {
+        ListeningPoint udpListeningPoint = sipStack.createListeningPoint(sipServerProperties.getHost(),
                 sipServerProperties.getPort(), ListeningPoint.UDP);
         SipProvider sipProvider = sipStack.createSipProvider(udpListeningPoint);
         sipProvider.addSipListener(sipServerListeners);
@@ -85,8 +85,4 @@ public class SipServerConfiguration {
         return sipProvider;
     }
 
-    private String getIp () throws UnknownHostException {
-        Inet4Address  ip = IntentAddressUtil.getLocalIp4Address().orElseThrow(() -> new UnknownHostException("IP地址获取失败"));
-        return  ip.getHostAddress();
-    }
 }

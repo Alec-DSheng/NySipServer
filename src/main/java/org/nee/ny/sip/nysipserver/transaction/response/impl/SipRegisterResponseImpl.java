@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.configuration.SipServerProperties;
 import org.nee.ny.sip.nysipserver.transaction.response.SipRegisterResponse;
 import org.nee.ny.sip.nysipserver.utils.UniqueCodeUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.sip.header.ContactHeader;
