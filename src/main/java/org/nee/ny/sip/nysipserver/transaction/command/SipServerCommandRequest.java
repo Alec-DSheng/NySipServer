@@ -61,7 +61,7 @@ public class SipServerCommandRequest implements SipRequest {
             String transport = playerCommandParams.getDevice().getTransport();
             String host = device.getHost() + ":" + device.getPort();
             log.info("=====request params host : {}, transport : {} =======", host,transport);
-            SipURI sipURI = addressFactory.createSipURI(device.getDeviceId(), host );
+            SipURI sipURI = addressFactory.createSipURI(device.getDeviceId(), host);
             CallIdHeader callIdHeader = ServerTransactionFactory.getInstance().getCallIdHeader(sipTcpProvider,
                     sipUdpProvider, transport);
             CSeqHeader cSeqHeader = headerFactory.createCSeqHeader(1L, Request.MESSAGE);

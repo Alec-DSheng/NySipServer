@@ -50,9 +50,9 @@ public class DeviceInfoMessageRequest  extends MessageRequestAbstract  {
         DeviceInfoMessageRequest deviceInfoMessageRequest = (DeviceInfoMessageRequest) XmlObjectConvertUtil.xmlConvertObject(content, this);
         Optional.ofNullable(deviceInfoMessageRequest).ifPresent(device ->
                 this.deviceInfo = DeviceInfo.builder().
-                 deviceId(device.getDeviceId())
-                .channel(device.getChannel())
-                .deviceName(device.getDeviceName())
+                 code(device.getDeviceId())
+                .channelNum(device.getChannel())
+                .name(device.getDeviceName())
                 .firmware(device.getFirmware())
                 .manufacturer(device.getManufacturer())
                 .model(device.getModel())

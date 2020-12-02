@@ -17,9 +17,9 @@ import java.io.Serializable;
 @ToString
 public class DeviceInfo implements Serializable {
 
-    private String deviceId;
+    private String code;
 
-    private String deviceName;
+    private String name;
 
     private String manufacturer;
 
@@ -27,12 +27,14 @@ public class DeviceInfo implements Serializable {
 
     private String firmware;
 
-    private Integer channel;
+    private Integer channelNum;
 
     private String host;
 
     private String transport;
 
     private Integer port;
+
+    private String domain;
 
 }

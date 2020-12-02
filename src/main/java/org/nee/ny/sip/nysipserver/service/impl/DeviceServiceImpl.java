@@ -1,12 +1,13 @@
 package org.nee.ny.sip.nysipserver.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.nee.ny.sip.nysipserver.domain.Device;
-import org.nee.ny.sip.nysipserver.domain.DeviceCommonKey;
-import org.nee.ny.sip.nysipserver.domain.DeviceInfo;
+import org.nee.ny.sip.nysipserver.configuration.SipServerProperties;
+import org.nee.ny.sip.nysipserver.domain.*;
 import org.nee.ny.sip.nysipserver.event.RegisterEvent;
 import org.nee.ny.sip.nysipserver.model.DeviceCacheOperatorModel;
 import org.nee.ny.sip.nysipserver.service.DeviceService;
+import org.nee.ny.sip.nysipserver.service.kafka.KafkaSender;
+import org.nee.ny.sip.nysipserver.service.kafka.SendSuccessCallback;
 import org.nee.ny.sip.nysipserver.transaction.command.message.CatalogQueryCommand;
 import org.nee.ny.sip.nysipserver.transaction.command.message.DeviceInfoQueryCommand;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,12 @@ public class DeviceServiceImpl implements DeviceService {
     private final DeviceInfoQueryCommand deviceInfoQueryCommand;
 
     private final CatalogQueryCommand catalogQueryCommand;
+
+    @Autowired
+    private SipServerProperties sipServerProperties;
+
+    @Autowired
+    private KafkaSender kafkaSender;
 
     public DeviceServiceImpl(DeviceCacheOperatorModel deviceCacheOperatorModel, DeviceInfoQueryCommand deviceInfoQueryCommand,
                              CatalogQueryCommand catalogQueryCommand) {
@@ -88,19 +95,22 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public void dealReportDeviceProperty(DeviceInfo deviceInfo) {
-        //从缓存去除设备信息
-//        Optional.ofNullable(deviceCacheOperatorModel.getDevice(deviceInfo.getDeviceId()))
-//                .ifPresent(device -> {
-//                    deviceInfo.setHost(device.getHost());
-//                    deviceInfo.setPort(device.getPort());
-//                    deviceInfo.setTransport(device.getTransport());
-//                    //写入kafka 数据
-//                    //catalogQueryCommand.sendCommand(device);
-//                });
-        Device device = deviceCacheOperatorModel.getDevice(deviceInfo.getDeviceId());
-        if (Objects.nonNull(device)) {
-            deviceInfoQueryCommand.sendCommand(device);
-        }
+        Optional.ofNullable(deviceCacheOperatorModel.getDevice(deviceInfo.getCode())).ifPresent(device -> {
+            deviceInfo.setHost(device.getHost());
+            deviceInfo.setPort(device.getPort());
+            deviceInfo.setTransport(device.getTransport());
+            deviceInfo.setDomain(sipServerProperties.getDomain());
+            kafkaSender.sendMessage(Constants.TOPIC_DEVICE_REGISTER,
+                    new EventEnvelope<>(Constants.TYPE_REGISTER, deviceInfo), () -> {
+                try {
+                    Thread.sleep(1000);
+                    catalogQueryCommand.sendCommand(device);
+                } catch (InterruptedException e) {
+                    log.error("interruptException", e);
+                }
+            });
+        });
+
     }
 
 }
