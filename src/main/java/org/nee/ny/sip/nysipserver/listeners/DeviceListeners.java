@@ -2,7 +2,6 @@ package org.nee.ny.sip.nysipserver.listeners;
 
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.configuration.SipServerProperties;
-import org.nee.ny.sip.nysipserver.domain.Device;
 import org.nee.ny.sip.nysipserver.event.*;
 import org.nee.ny.sip.nysipserver.event.message.MessageRequestAbstract;
 import org.nee.ny.sip.nysipserver.listeners.factory.MessageEventFactory;
@@ -10,14 +9,12 @@ import org.nee.ny.sip.nysipserver.model.DeviceCacheOperatorModel;
 import org.nee.ny.sip.nysipserver.service.DeviceService;
 import org.nee.ny.sip.nysipserver.transaction.response.SipRegisterResponse;
 import org.nee.ny.sip.nysipserver.transaction.response.impl.SipMessageResponseHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import javax.sip.RequestEvent;
 import javax.sip.message.MessageFactory;
-import javax.sip.message.Request;
 import javax.sip.message.Response;
 import java.text.ParseException;
 
@@ -38,21 +35,22 @@ public class DeviceListeners {
 
     private final DeviceCacheOperatorModel deviceCacheOperatorModel;
 
-    @Autowired
-    private ApplicationEventPublisher publisher;
+    private final ApplicationEventPublisher publisher;
 
-    @Autowired
-    private MessageFactory messageFactory;
+    private final MessageFactory messageFactory;
 
-    @Autowired
-    private DeviceService deviceService;
+    private final DeviceService deviceService;
 
     public DeviceListeners(SipRegisterResponse sipRegisterResponse, SipServerProperties sipServerProperties,
-                           SipMessageResponseHandler sipMessageResponseHandler, DeviceCacheOperatorModel deviceCacheOperatorModel) {
+                           SipMessageResponseHandler sipMessageResponseHandler, DeviceCacheOperatorModel deviceCacheOperatorModel,
+                           ApplicationEventPublisher publisher, MessageFactory messageFactory, DeviceService deviceService) {
         this.sipRegisterResponse = sipRegisterResponse;
         this.sipServerProperties = sipServerProperties;
         this.sipMessageResponseHandler = sipMessageResponseHandler;
         this.deviceCacheOperatorModel = deviceCacheOperatorModel;
+        this.publisher = publisher;
+        this.messageFactory = messageFactory;
+        this.deviceService = deviceService;
     }
 
     @EventListener
