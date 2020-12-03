@@ -68,6 +68,7 @@ public class MessageEventFactory {
                 messageRequestMap.put(annotation.name(), (MessageRequestAbstract)bean);
             }
         }
+        log.info("message {}", messageRequestMap);
     }
 
 

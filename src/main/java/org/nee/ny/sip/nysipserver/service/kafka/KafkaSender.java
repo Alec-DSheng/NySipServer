@@ -28,4 +28,13 @@ public class KafkaSender {
                 },
         failure -> log.error("发送kafka消息失败 错误原因 {}", failure.getMessage()));
     }
+
+    public void sendMessage(String topic, EventEnvelope eventEnvelope) {
+        log.info("send topic {}, message {}", topic, eventEnvelope);
+        ListenableFuture listenableFuture = kafkaTemplate.send(topic, eventEnvelope);
+        listenableFuture.addCallback(success -> {
+                    log.info("发送kafka消息成功 topic  {} , body {} success {}", topic, eventEnvelope, success);
+                },
+        failure -> log.error("发送kafka消息失败 错误原因 {}", failure.getMessage()));
+    }
 }

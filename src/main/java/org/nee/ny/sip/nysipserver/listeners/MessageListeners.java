@@ -1,16 +1,20 @@
 package org.nee.ny.sip.nysipserver.listeners;
 
 import lombok.extern.slf4j.Slf4j;
+import org.nee.ny.sip.nysipserver.domain.DeviceChannel;
 import org.nee.ny.sip.nysipserver.domain.DeviceInfo;
 import org.nee.ny.sip.nysipserver.event.message.CatalogMessageRequest;
 import org.nee.ny.sip.nysipserver.event.message.DeviceInfoMessageRequest;
 import org.nee.ny.sip.nysipserver.event.message.KeepLiveMessageRequest;
+import org.nee.ny.sip.nysipserver.service.DeviceChannelService;
 import org.nee.ny.sip.nysipserver.service.DeviceService;
 import org.nee.ny.sip.nysipserver.transaction.command.message.CatalogQueryCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -23,6 +27,9 @@ import java.util.Objects;
 public class MessageListeners {
 
     private final DeviceService deviceService;
+
+    @Autowired
+    private DeviceChannelService deviceChannelService;
 
 
     public MessageListeners(DeviceService deviceService) {
@@ -47,7 +54,10 @@ public class MessageListeners {
 
     @EventListener
     public void catalogReceive(CatalogMessageRequest catalogMessageRequest) {
-
-        log.info("上报渠道信息 {}", catalogMessageRequest.getContent());
+        log.info("监听catalog 事件");
+        List<DeviceChannel> deviceChannelList = catalogMessageRequest.getDeviceChannel();
+        if (!CollectionUtils.isEmpty(deviceChannelList)) {
+            deviceChannelService.channelReport(deviceChannelList);
+        }
     }
 }
