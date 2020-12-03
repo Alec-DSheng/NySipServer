@@ -1,7 +1,6 @@
 package org.nee.ny.sip.nysipserver.event;
 
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
