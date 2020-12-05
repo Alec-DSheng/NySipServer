@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.domain.VideoPlayer;
 import org.nee.ny.sip.nysipserver.event.response.InviteResponseEvent;
 import org.nee.ny.sip.nysipserver.service.VideoPlayerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -20,8 +19,11 @@ import java.util.Objects;
 @Slf4j
 public class ResponseListeners {
 
-    @Autowired
-    private VideoPlayerService videoPlayerService;
+    private final VideoPlayerService videoPlayerService;
+
+    public ResponseListeners(VideoPlayerService videoPlayerService) {
+        this.videoPlayerService = videoPlayerService;
+    }
 
     @EventListener
     public void responseInvite(InviteResponseEvent inviteResponseEvent) {

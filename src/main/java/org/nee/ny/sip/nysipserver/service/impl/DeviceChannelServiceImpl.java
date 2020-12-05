@@ -6,7 +6,6 @@ import org.nee.ny.sip.nysipserver.domain.DeviceChannel;
 import org.nee.ny.sip.nysipserver.domain.EventEnvelope;
 import org.nee.ny.sip.nysipserver.service.DeviceChannelService;
 import org.nee.ny.sip.nysipserver.service.kafka.KafkaSender;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,8 +19,11 @@ import java.util.List;
 @Slf4j
 public class DeviceChannelServiceImpl implements DeviceChannelService {
 
-    @Autowired
-    private KafkaSender kafkaSender;
+    private final KafkaSender kafkaSender;
+
+    public DeviceChannelServiceImpl(KafkaSender kafkaSender) {
+        this.kafkaSender = kafkaSender;
+    }
 
     @Override
     public void channelReport(List<DeviceChannel> deviceChannelList) {

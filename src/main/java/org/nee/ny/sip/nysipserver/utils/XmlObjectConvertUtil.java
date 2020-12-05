@@ -80,6 +80,9 @@ public class XmlObjectConvertUtil {
         String [] values = content.split(RN);
         for (String value: values) {
             String[] fields = value.split("=");
+            if (fields.length != 2) {
+                continue;
+            }
             data.put(fields[0], fields[1]);
         }
         return data;

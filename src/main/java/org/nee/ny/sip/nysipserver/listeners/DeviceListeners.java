@@ -134,5 +134,4 @@ public class DeviceListeners {
     private void sendResponse(RequestEvent requestEvent, Response response) {
         sipMessageResponseHandler.sendResponse(requestEvent, response);
     }
-
 }
