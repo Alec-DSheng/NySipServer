@@ -1,6 +1,8 @@
 package org.nee.ny.sip.nysipserver.transaction.command;
 
 
+import org.nee.ny.sip.nysipserver.transaction.command.Invite.PlayCommandParams;
+
 import javax.sip.message.Request;
 import java.util.Optional;
 
@@ -13,7 +15,7 @@ public interface SipRequest {
 
     Optional<Request> createMessageRequest(CommandParams commandParams);
 
-//    Optional<Request> createInviteRequest(PlayerCommandParams playerCommandParams, CommandTagEnums commandTagEnums);
+    Optional<Request> createInviteRequest(PlayCommandParams playerCommandParams);
 //
 //    Optional<Request> createRequest(Device device, CommandTagEnums commandTagEnums, String message);
 

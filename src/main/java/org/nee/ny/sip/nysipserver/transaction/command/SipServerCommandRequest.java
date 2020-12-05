@@ -3,6 +3,7 @@ package org.nee.ny.sip.nysipserver.transaction.command;
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.configuration.SipServerProperties;
 import org.nee.ny.sip.nysipserver.domain.Device;
+import org.nee.ny.sip.nysipserver.transaction.command.Invite.PlayCommandParams;
 import org.nee.ny.sip.nysipserver.transaction.factory.ServerTransactionFactory;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,8 @@ import javax.sip.header.*;
 import javax.sip.message.MessageFactory;
 import javax.sip.message.Request;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -79,6 +82,44 @@ public class SipServerCommandRequest implements SipRequest {
         }
         return Optional.empty();
     }
+
+    @Override
+    public Optional<Request> createInviteRequest(PlayCommandParams playerCommandParams) {
+        Device device = playerCommandParams.getDevice();
+        String transport = playerCommandParams.getDevice().getTransport();
+        String host = device.getHost() + ":" + device.getPort();
+        try {
+            SipURI requestLine = addressFactory.createSipURI(playerCommandParams.getChannelId(), host);
+            ViaHeader viaHeader = getViaHeader(transport, playerCommandParams.getVia());
+            FromHeader fromHeader = getFromHeaderAddressChannel(playerCommandParams.getFrom());
+            ToHeader toHeader = getToHeaderAddress(playerCommandParams.getChannelId(), playerCommandParams.getTo());
+            CallIdHeader callIdHeader = ServerTransactionFactory.getInstance().getCallIdHeader(sipTcpProvider,
+                    sipUdpProvider, transport);
+            CSeqHeader cSeqHeader = headerFactory.createCSeqHeader(1L, Request.INVITE);
+            MaxForwardsHeader maxForwards = headerFactory.createMaxForwardsHeader(70);
+
+            Request request = messageFactory.createRequest(requestLine, Request.INVITE, callIdHeader,
+                    cSeqHeader,fromHeader, toHeader, Collections.singletonList(viaHeader), maxForwards);
+
+            String sipId = sipServerProperties.getId();
+            String sipHost = sipServerProperties.getHost() + ":" + sipServerProperties.getPort();
+
+            Address concatAddress = addressFactory.createAddress(addressFactory.createSipURI(sipId, sipHost));
+            request.addHeader(headerFactory.createContactHeader(concatAddress));
+
+            String subjectHeaderVal = String.format("%s:%s,%s:%s", playerCommandParams.getChannelId(),
+                    playerCommandParams.getStreamCode(), sipId, 0);
+            SubjectHeader subjectHeader = headerFactory.createSubjectHeader(subjectHeaderVal);
+            request.addHeader(subjectHeader);
+            ContentTypeHeader contentTypeHeader = headerFactory.createContentTypeHeader("Application", "SDP");
+            request.setContent(playerCommandParams.getContent(), contentTypeHeader);
+            return Optional.of(request);
+        } catch (ParseException  | InvalidArgumentException e) {
+            log.error("sip address error ", e);
+        }
+        return Optional.empty();
+    }
+
 
     private FromHeader getFromHeaderAddress(String tag) throws ParseException {
         String host = sipServerProperties.getHost() + ":" + sipServerProperties.getPort();

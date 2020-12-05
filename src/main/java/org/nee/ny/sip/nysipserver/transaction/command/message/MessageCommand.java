@@ -1,8 +1,6 @@
 package org.nee.ny.sip.nysipserver.transaction.command.message;
 
-import org.nee.ny.sip.nysipserver.domain.Device;
 import org.nee.ny.sip.nysipserver.transaction.command.Command;
-import org.nee.ny.sip.nysipserver.transaction.command.CommandParams;
 
 import javax.sip.message.Request;
 
@@ -11,7 +9,7 @@ import javax.sip.message.Request;
  * Description: 发送message 命令
  * @date: 10:11 2020-12-01
  */
-public interface MessageCommand extends Command {
+public interface MessageCommand<T>  extends Command<T> {
 
     String getViaTag();
 
@@ -19,8 +17,5 @@ public interface MessageCommand extends Command {
 
     String getToTag();
 
-    Request createMessageRequest(CommandParams commandParams);
-
-    void sendCommand(Device device);
-
+    Request createMessageRequest(T t);
 }

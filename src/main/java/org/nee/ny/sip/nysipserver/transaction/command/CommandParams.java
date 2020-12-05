@@ -1,8 +1,6 @@
 package org.nee.ny.sip.nysipserver.transaction.command;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.nee.ny.sip.nysipserver.domain.Device;
 
 /**
@@ -11,6 +9,8 @@ import org.nee.ny.sip.nysipserver.domain.Device;
  * @date: 10:09 2020-12-01
  */
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public  class CommandParams {
 
     @Getter
