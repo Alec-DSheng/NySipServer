@@ -2,7 +2,7 @@ package org.nee.ny.sip.nysipserver.event.message;
 
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.nee.ny.sip.nysipserver.domain.intefaces.MessageReqeust;
+import org.nee.ny.sip.nysipserver.domain.intefaces.MessageRequest;
 import org.nee.ny.sip.nysipserver.utils.XmlObjectConvertUtil;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Description:
  * @date: 11:33 2020-11-30
  */
-@MessageReqeust(name = "Keepalive")
+@MessageRequest(name = "Keepalive")
 @XmlRootElement(name = "Notify")
 @Slf4j
 @ToString

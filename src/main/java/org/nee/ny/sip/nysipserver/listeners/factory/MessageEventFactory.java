@@ -3,12 +3,14 @@ package org.nee.ny.sip.nysipserver.listeners.factory;
 
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.domain.intefaces.MessageHandler;
-import org.nee.ny.sip.nysipserver.domain.intefaces.MessageReqeust;
+import org.nee.ny.sip.nysipserver.domain.intefaces.MessageRequest;
+import org.nee.ny.sip.nysipserver.domain.intefaces.MessageResponse;
 import org.nee.ny.sip.nysipserver.event.*;
 import org.nee.ny.sip.nysipserver.event.message.*;
 import org.reflections.Reflections;
 
 import javax.sip.RequestEvent;
+import javax.sip.ResponseEvent;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -30,6 +32,9 @@ public class MessageEventFactory {
 
     private static final Map<String, MessageRequestAbstract> messageRequestMap = new ConcurrentHashMap<>();
 
+    private static final Map<String, MessageResponseAbstract> messageResponseMap = new ConcurrentHashMap<>();
+
+
     private MessageEventFactory(){
 
     }
@@ -38,6 +43,7 @@ public class MessageEventFactory {
         try {
             initMessageHandler(reflections);
             initMessageRequest(reflections);
+            initMessageResponse(reflections);
         } catch (Exception e) {
             log.error("扫描注解错误", e);
         }
@@ -55,14 +61,25 @@ public class MessageEventFactory {
         }
     }
 
+    private static void initMessageResponse(Reflections reflections) throws IllegalAccessException, InstantiationException {
+        Set<Class<?>> classes = reflections.getTypesAnnotatedWith(MessageResponse.class);
+        for (Class<?> c : classes) {
+            Object bean = c.newInstance();
+            if (bean instanceof MessageResponseAbstract) {
+                MessageResponse annotation = c.getAnnotation(MessageResponse.class);
+                messageResponseMap.put(annotation.name(), (MessageResponseAbstract)bean);
+            }
+        }
+    }
+
     private static void initMessageRequest(Reflections reflections) throws
             IllegalAccessException, InstantiationException {
 
-        Set<Class<?>> classes = reflections.getTypesAnnotatedWith(MessageReqeust.class);
+        Set<Class<?>> classes = reflections.getTypesAnnotatedWith(MessageRequest.class);
         for (Class<?> c : classes) {
             Object bean = c.newInstance();
             if (bean instanceof MessageRequestAbstract) {
-                MessageReqeust annotation = c.getAnnotation(MessageReqeust.class);
+                MessageRequest annotation = c.getAnnotation(MessageRequest.class);
                 messageRequestMap.put(annotation.name(), (MessageRequestAbstract)bean);
             }
         }
@@ -74,7 +91,12 @@ public class MessageEventFactory {
         String method = requestEvent.getRequest().getMethod();
         MessageEventAbstract messageEventAbstract = Optional.ofNullable(messageEventMap.get(method))
                 .orElseThrow(NullPointerException::new);
-        messageEventAbstract.init(requestEvent);
+
+        try {
+            messageEventAbstract.init(requestEvent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return messageEventAbstract;
     }
 
@@ -83,6 +105,14 @@ public class MessageEventFactory {
                 .orElseThrow(NullPointerException::new);
         requestAbstract.init(requestEvent);
         return requestAbstract;
+    }
+
+
+    public MessageResponseAbstract getMessageResponse (String method, ResponseEvent responseEvent) {
+        MessageResponseAbstract responseAbstract = Optional.ofNullable(messageResponseMap.get(method))
+                .orElseThrow(NullPointerException::new);
+        responseAbstract.init(responseEvent);
+        return responseAbstract;
     }
 
     public static MessageEventFactory getInstance() {

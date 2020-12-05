@@ -6,9 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * @Author: alec
  * Description:
- * @date: 15:02 2020-11-30
+ * @date: 13:35 2020-12-05
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface MessageReqeust {
+public @interface MessageResponse {
+
     String name();
 }

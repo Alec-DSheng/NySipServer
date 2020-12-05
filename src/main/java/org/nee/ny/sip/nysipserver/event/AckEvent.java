@@ -1,8 +1,13 @@
 package org.nee.ny.sip.nysipserver.event;
 
+import gov.nist.javax.sip.header.CSeq;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.domain.intefaces.MessageHandler;
-import org.nee.ny.sip.nysipserver.event.MessageEventAbstract;
+
+import javax.sip.InvalidArgumentException;
+import javax.sip.SipException;
+import javax.sip.message.Request;
 
 /**
  * @Author: alec
@@ -12,8 +17,17 @@ import org.nee.ny.sip.nysipserver.event.MessageEventAbstract;
 @Slf4j
 @MessageHandler(name = "ACK")
 public class AckEvent extends MessageEventAbstract {
+
     @Override
     public void load() {
-        log.info("接收到设备上报 AckEvent 消息, 需要进行分类处理");
+//        CSeq csReq = (CSeq) requestEvent.getRequest().getHeader(CSeq.NAME);
+//        try {
+//            log.info("{}", requestEvent.getDialog());
+//            log.info("{}", csReq);
+//            this.ackRequest = requestEvent.getDialog().createAck(csReq.getSeqNumber());
+//        } catch (InvalidArgumentException | SipException e) {
+//            e.printStackTrace();
+//            log.error("ack error ", e);
+//        }
     }
 }
