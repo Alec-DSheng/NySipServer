@@ -68,4 +68,14 @@ public class DeviceCacheOperatorModel {
         String heartValue = redisTemplate.opsForValue().get(key);
         return StringUtils.hasLength(heartValue);
     }
+
+    public void cacheStreamCode(String deviceId, String channelId, String streamCode) {
+        String key = String.format("%s%s:%s", DeviceCommonKey.stream, deviceId, channelId);
+        redisTemplate.opsForValue().set(key, streamCode);
+    }
+
+    public String getStreamCode(String deviceId, String channelId) {
+        String key = String.format("%s%s:%s", DeviceCommonKey.stream, deviceId, channelId);
+        return redisTemplate.opsForValue().get(key);
+    }
 }

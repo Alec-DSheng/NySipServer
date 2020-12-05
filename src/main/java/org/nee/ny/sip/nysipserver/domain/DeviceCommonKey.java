@@ -10,4 +10,6 @@ public interface DeviceCommonKey {
     String deviceNo = "D_NO:"; //记录设备初次注册
 
     String heart = "H_NO:"; //记录设备心跳
+
+    String stream = "SSCODE:";
 }

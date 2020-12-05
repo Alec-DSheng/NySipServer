@@ -2,6 +2,7 @@ package org.nee.ny.sip.nysipserver.event;
 
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.domain.intefaces.MessageHandler;
+import org.nee.ny.sip.nysipserver.event.MessageEventAbstract;
 
 /**
  * @Author: alec

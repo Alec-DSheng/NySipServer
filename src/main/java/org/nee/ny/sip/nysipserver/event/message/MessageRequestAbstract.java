@@ -1,10 +1,10 @@
 package org.nee.ny.sip.nysipserver.event.message;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.nee.ny.sip.nysipserver.utils.XmlObjectConvertUtil;
 
 import javax.sip.RequestEvent;
 import javax.sip.message.Request;
+import java.io.UnsupportedEncodingException;
 
 /**
  * @Author: alec
@@ -28,7 +28,11 @@ public abstract class MessageRequestAbstract {
 
     public void load () {
         Request request = requestEvent.getRequest();
-        this.content = new String(request.getRawContent());
+        try {
+            this.content = new String(request.getRawContent(), "gbk");
+        } catch (UnsupportedEncodingException e) {
+            log.error("解析编码错误", e);
+        }
     }
 
     public void init(RequestEvent requestEven) {

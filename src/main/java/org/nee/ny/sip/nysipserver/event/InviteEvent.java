@@ -2,6 +2,7 @@ package org.nee.ny.sip.nysipserver.event;
 
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.domain.intefaces.MessageHandler;
+import org.nee.ny.sip.nysipserver.event.MessageEventAbstract;
 
 /**
  * @Author: alec
@@ -14,6 +15,6 @@ public class InviteEvent extends MessageEventAbstract {
 
     @Override
     public void load() {
-        log.info("接收到设备上报 CancelEvent 消息, 需要进行分类处理");
+        log.info("接收到设备上报 INVITE 消息, 需要进行分类处理");
     }
 }

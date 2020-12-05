@@ -1,6 +1,7 @@
 package org.nee.ny.sip.nysipserver.transaction.command.message;
 
 import org.nee.ny.sip.nysipserver.domain.Device;
+import org.nee.ny.sip.nysipserver.transaction.command.CommandParams;
 import org.nee.ny.sip.nysipserver.transaction.command.SipServerCommandRequest;
 import org.nee.ny.sip.nysipserver.transaction.response.MessageResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component;
  * @date: 10:16 2020-12-01
  */
 @Component
-public class DeviceInfoQueryCommand extends MessageCommandAbstract implements MessageCommand{
+public class DeviceInfoQueryCommand extends MessageCommandAbstract implements  MessageCommand<CommandParams> {
     private final static String TYPE_INFO = "DeviceInfo";
 
     @Autowired

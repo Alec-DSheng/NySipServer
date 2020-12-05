@@ -15,7 +15,7 @@ import javax.sip.message.Request;
  * @date: 10:42 2020-12-01
  */
 @Slf4j
-public abstract class MessageCommandAbstract implements MessageCommand {
+public abstract class MessageCommandAbstract implements MessageCommand<CommandParams> {
 
     private MessageResponseHandler messageResponseHandler;
 
@@ -43,7 +43,6 @@ public abstract class MessageCommandAbstract implements MessageCommand {
         messageResponseHandler.sendResponse(transport, createMessageRequest(commandParams));
     }
 
-    @Override
     public void sendCommand(Device device) {
         CommandXmlQueryParams commandXmlQueryParams = createCommandParams(device);
         CommandParams commandParams = CommandParams.builder()

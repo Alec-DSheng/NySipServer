@@ -17,7 +17,9 @@ import java.util.Optional;
 public enum  ChannelStatus {
 
     ON(1, "ON"),
-    OFF(0, "OFF");
+    OFF(0, "OFF"),
+    OFFLINE(0, "OFFLINE"),
+    ONLINE(1, "ONLINE");
 
     private Integer code;
 

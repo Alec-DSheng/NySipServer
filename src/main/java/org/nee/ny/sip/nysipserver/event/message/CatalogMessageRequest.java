@@ -44,22 +44,21 @@ public class CatalogMessageRequest  extends MessageRequestAbstract   {
         log.info("接收到 catalog {}", content);
         CatalogMessageRequest catalogMessageRequest = (CatalogMessageRequest) XmlObjectConvertUtil.xmlConvertObject(content, this);
         try {
-            Optional.ofNullable(catalogMessageRequest).ifPresent(channel -> {
+            Optional.ofNullable(catalogMessageRequest).ifPresent(channel ->
                 deviceChannel =  channel.getDeviceList().getItem().stream().map(item ->
-                        DeviceChannel.builder()
-                                .address(item.getAddress())
-                                .civilCode(item.getCivilCode())
-                                .code(item.getDeviceId())
-                                .deviceId(item.getParentId())
-                                .manufacturer(item.getManufacturer())
-                                .model(item.getModel())
-                                .name(item.getName())
-                                .owner(item.getOwner())
-                                .registerWay(item.getRegisterWay())
-                                .secret(item.getSecrecy())
-                                .status(ChannelStatus.codeByName(item.getStatus()).orElseThrow(NullPointerException::new))
-                                .build()).collect(Collectors.toList());
-            });
+                    DeviceChannel.builder()
+                            .address(item.getAddress())
+                            .civilCode(item.getCivilCode())
+                            .code(item.getDeviceId())
+                            .deviceId(channel.getDeviceId())
+                            .manufacturer(item.getManufacturer())
+                            .model(item.getModel())
+                            .name(item.getName())
+                            .owner(item.getOwner())
+                            .registerWay(item.getRegisterWay())
+                            .secret(item.getSecrecy())
+                            .status(ChannelStatus.codeByName(item.getStatus()).orElseThrow(NullPointerException::new))
+                            .build()).collect(Collectors.toList()));
         } catch (Exception e) {
             e.printStackTrace();
         }

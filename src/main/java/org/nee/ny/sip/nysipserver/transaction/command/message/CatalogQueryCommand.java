@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  * @date: 10:17 2020-12-01
  */
 @Component
-public class CatalogQueryCommand extends MessageCommandAbstract  implements MessageCommand{
+public class CatalogQueryCommand extends MessageCommandAbstract  implements MessageCommand<CommandParams>{
 
     private final static String TYPE_CATE = "Catalog";
 
@@ -23,6 +23,7 @@ public class CatalogQueryCommand extends MessageCommandAbstract  implements Mess
                                SipServerCommandRequest sipServerCommandRequest ) {
         super(messageResponseHandler,sipServerCommandRequest);
     }
+
 
     @Override
     public CommandXmlQueryParams createCommandParams(Device device) {
