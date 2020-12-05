@@ -2,6 +2,7 @@ package org.nee.ny.sip.nysipserver.service.impl;
 
 import org.nee.ny.sip.nysipserver.configuration.SipServerProperties;
 import org.nee.ny.sip.nysipserver.domain.Device;
+import org.nee.ny.sip.nysipserver.domain.VideoPlayer;
 import org.nee.ny.sip.nysipserver.domain.api.VideoInfoResponse;
 import org.nee.ny.sip.nysipserver.model.DeviceCacheOperatorModel;
 import org.nee.ny.sip.nysipserver.service.VideoPlayerService;
@@ -41,7 +42,6 @@ public class VideoPlayerServiceImpl implements VideoPlayerService {
        String streamCode = deviceCacheOperatorModel.getStreamCode(deviceId, channelId);
        if (!StringUtils.hasLength(streamCode)) {
            streamCode = videoPlayCommand.sendCommand(device, channelId);
-           deviceCacheOperatorModel.cacheStreamCode(deviceId, channelId, streamCode);
        }
        return new VideoInfoResponse(sipServerProperties.getMediaIp(), streamCode);
     }
@@ -49,5 +49,13 @@ public class VideoPlayerServiceImpl implements VideoPlayerService {
     @Override
     public void stop() {
 
+    }
+
+    @Override
+    public void playingVideo(VideoPlayer videoPlayer) {
+        deviceCacheOperatorModel.cacheStreamCode(videoPlayer.getDeviceId(),
+                videoPlayer.getChannelId(), videoPlayer.getStreamCode());
+
+        //发送kafka消息,更新播放码
     }
 }

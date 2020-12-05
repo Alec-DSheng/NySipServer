@@ -25,20 +25,42 @@ public abstract class MessageResponseAbstract {
     @Getter
     private ResponseEvent responseEvent;
 
+    @Getter
+    private Dialog dialog;
+
+    @Getter
+    private Request reqAck;
+
+    @Getter
+    private String content;
+
+    public Response response;
+
+    public abstract void dealResponse();
+
     public void init(ResponseEvent responseEvent) {
         this.responseEvent = responseEvent;
-//        this.dialog = responseEvent.getDialog();
-//        Response response = responseEvent.getResponse();
-//        CSeqHeader cseq = (CSeqHeader) response.getHeader(CSeqHeader.NAME);
-//        try {
-//            this.reqAck = dialog.createAck(cseq.getSeqNumber());
-//            SipURI requestURI = (SipURI) reqAck.getRequestURI();
-//            ViaHeader viaHeader = (ViaHeader) response.getHeader(ViaHeader.NAME);
-//            requestURI.setHost(viaHeader.getHost());
-//            requestURI.setPort(viaHeader.getPort());
-//            reqAck.setRequestURI(requestURI);
-//        } catch (InvalidArgumentException | SipException |ParseException e) {
-//            log.error("get request ack error ", e);
-//        }
+        this.dialog = responseEvent.getDialog();
+        response = responseEvent.getResponse();
+        CSeqHeader cseq = (CSeqHeader) response.getHeader(CSeqHeader.NAME);
+        this.content = new String(response.getRawContent());
+        try {
+            this.reqAck = dialog.createAck(cseq.getSeqNumber());
+            SipURI requestURI = (SipURI) reqAck.getRequestURI();
+            ViaHeader viaHeader = (ViaHeader) response.getHeader(ViaHeader.NAME);
+            requestURI.setHost(viaHeader.getHost());
+            requestURI.setPort(viaHeader.getPort());
+            reqAck.setRequestURI(requestURI);
+        } catch (InvalidArgumentException | SipException |ParseException e) {
+            log.error("get request ack error ", e);
+        }
+    }
+
+    protected void responseAck() {
+        try {
+            dialog.sendAck(reqAck);
+        } catch (SipException e) {
+            log.error("处理响应失败", e);
+        }
     }
 }

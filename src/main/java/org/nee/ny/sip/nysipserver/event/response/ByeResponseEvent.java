@@ -12,4 +12,8 @@ import org.nee.ny.sip.nysipserver.event.MessageResponseAbstract;
 @MessageResponse(name="BYE")
 @Slf4j
 public class ByeResponseEvent extends MessageResponseAbstract {
+    @Override
+    public void dealResponse() {
+
+    }
 }

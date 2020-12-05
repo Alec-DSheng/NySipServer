@@ -5,6 +5,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.springframework.util.StringUtils;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -13,6 +14,8 @@ import javax.xml.bind.Unmarshaller;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Author: alec
@@ -21,6 +24,8 @@ import java.io.StringReader;
  */
 @Slf4j
 public class XmlObjectConvertUtil {
+
+    private final static String RN = "\r\n";
 
     public static Object xmlConvertObject (String xml, Object obj) {
         try {
@@ -62,5 +67,21 @@ public class XmlObjectConvertUtil {
         reader.setEncoding("gbk");
         Document xml = reader.read(new ByteArrayInputStream(content));
         return xml.getRootElement();
+    }
+
+    /**
+     * 截取streamCode
+     * */
+    public static Map<String, String> convertStreamCode(String content) {
+        if (!StringUtils.hasLength(content)) {
+            return null;
+        }
+        Map<String, String> data = new HashMap<>();
+        String [] values = content.split(RN);
+        for (String value: values) {
+            String[] fields = value.split("=");
+            data.put(fields[0], fields[1]);
+        }
+        return data;
     }
 }

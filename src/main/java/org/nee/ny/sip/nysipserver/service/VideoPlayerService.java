@@ -1,5 +1,6 @@
 package org.nee.ny.sip.nysipserver.service;
 
+import org.nee.ny.sip.nysipserver.domain.VideoPlayer;
 import org.nee.ny.sip.nysipserver.domain.api.VideoInfoResponse;
 
 /**
@@ -18,4 +19,6 @@ public interface VideoPlayerService {
      * 停用
      * */
     void stop();
+
+    void playingVideo(VideoPlayer videoPlayer);
 }
