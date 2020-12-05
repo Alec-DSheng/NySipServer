@@ -4,10 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.domain.api.VideoInfoResponse;
 import org.nee.ny.sip.nysipserver.service.VideoPlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 /**
@@ -23,9 +20,9 @@ public class VideoController {
     @Autowired
     private VideoPlayerService videoPlayerService;
 
-    @GetMapping
-    public Mono<VideoInfoResponse> player(@RequestParam(value = "deviceId") String deviceId,
-                                          @RequestParam(value = "channelId") String channelId) {
+    @GetMapping("/{deviceId}/{channelId}")
+    public Mono<VideoInfoResponse> player(@PathVariable(value = "deviceId") String deviceId,
+                                          @PathVariable(value = "channelId") String channelId) {
 
         return Mono.just(videoPlayerService.player(deviceId, channelId));
     }
