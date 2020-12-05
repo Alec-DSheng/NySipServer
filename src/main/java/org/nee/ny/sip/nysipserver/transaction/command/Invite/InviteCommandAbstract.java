@@ -63,7 +63,7 @@ public abstract class InviteCommandAbstract implements MessageCommand<PlayComman
         log.info("分配推流code {}", streamCode);
         PlayCommandParams playCommandParams =  createPlayCommandParams(device, channelId, streamCode);
         sendCommand(playCommandParams);
-        return streamCode;
+        return playCommandParams.getStreamCode();
     }
 
     @Override

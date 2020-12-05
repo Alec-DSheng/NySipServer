@@ -1,12 +1,13 @@
 package org.nee.ny.sip.nysipserver.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.configuration.SipServerProperties;
 import org.nee.ny.sip.nysipserver.domain.Device;
+import org.nee.ny.sip.nysipserver.domain.VideoPlayer;
 import org.nee.ny.sip.nysipserver.domain.api.VideoInfoResponse;
 import org.nee.ny.sip.nysipserver.model.DeviceCacheOperatorModel;
 import org.nee.ny.sip.nysipserver.service.VideoPlayerService;
 import org.nee.ny.sip.nysipserver.transaction.command.Invite.VideoPlayCommand;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -18,16 +19,20 @@ import java.util.Optional;
  * @date: 09:36 2020-12-05
  */
 @Service
+@Slf4j
 public class VideoPlayerServiceImpl implements VideoPlayerService {
 
-    @Autowired
-    private VideoPlayCommand videoPlayCommand;
+    private final VideoPlayCommand videoPlayCommand;
 
-    @Autowired
-    private DeviceCacheOperatorModel deviceCacheOperatorModel;
+    private final DeviceCacheOperatorModel deviceCacheOperatorModel;
 
-    @Autowired
-    private SipServerProperties sipServerProperties;
+    private final SipServerProperties sipServerProperties;
+
+    public VideoPlayerServiceImpl(VideoPlayCommand videoPlayCommand, DeviceCacheOperatorModel deviceCacheOperatorModel, SipServerProperties sipServerProperties) {
+        this.videoPlayCommand = videoPlayCommand;
+        this.deviceCacheOperatorModel = deviceCacheOperatorModel;
+        this.sipServerProperties = sipServerProperties;
+    }
 
     @Override
     public VideoInfoResponse player(String deviceId, String channelId) {
@@ -40,8 +45,7 @@ public class VideoPlayerServiceImpl implements VideoPlayerService {
 
        String streamCode = deviceCacheOperatorModel.getStreamCode(deviceId, channelId);
        if (!StringUtils.hasLength(streamCode)) {
-           streamCode = videoPlayCommand.sendCommand(device, channelId);
-           deviceCacheOperatorModel.cacheStreamCode(deviceId, channelId, streamCode);
+           streamCode =  videoPlayCommand.sendCommand(device, channelId);
        }
        return new VideoInfoResponse(sipServerProperties.getMediaIp(), streamCode);
     }
@@ -49,5 +53,12 @@ public class VideoPlayerServiceImpl implements VideoPlayerService {
     @Override
     public void stop() {
 
+    }
+
+    @Override
+    public void playingVideo(VideoPlayer videoPlayer) {
+        deviceCacheOperatorModel.cacheStreamCode(videoPlayer.getDeviceId(),
+                videoPlayer.getChannelId(), videoPlayer.getStreamCode());
+        log.info("播放参数 {}", videoPlayer);
     }
 }

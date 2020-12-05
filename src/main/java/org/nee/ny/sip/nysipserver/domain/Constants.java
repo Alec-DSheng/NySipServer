@@ -15,7 +15,6 @@ public class Constants {
 
     public static final String TOPIC_DEVICE_OFFLINE = "topic_device_offline";
 
-
     public static final String TYPE_REGISTER = "register";
 
     public static final String TYPE_CHANNEL = "channelReport";

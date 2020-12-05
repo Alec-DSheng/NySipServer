@@ -33,7 +33,7 @@ public class SipServerListeners implements SipListener {
     @Override
     public void processRequest(RequestEvent requestEvent) {
         Request request = requestEvent.getRequest();
-        log.info("listeners request method {}, {}", request.getMethod(), requestEvent.getDialog());
+        log.info("listeners request method {}", request.getMethod());
         MessageEventAbstract messageEventAbstract = MessageEventFactory.getInstance().
                 getMessageEvent(requestEvent);
         applicationEventPublisher.publishEvent(messageEventAbstract);

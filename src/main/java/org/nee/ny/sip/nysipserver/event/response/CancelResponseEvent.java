@@ -11,4 +11,8 @@ import org.nee.ny.sip.nysipserver.event.MessageResponseAbstract;
 @MessageResponse(name="CANCEL")
 public class CancelResponseEvent  extends MessageResponseAbstract {
 
+    @Override
+    public void dealResponse() {
+
+    }
 }
