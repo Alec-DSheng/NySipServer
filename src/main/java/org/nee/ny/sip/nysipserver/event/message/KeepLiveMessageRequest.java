@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.domain.intefaces.MessageReqeust;
 import org.nee.ny.sip.nysipserver.utils.XmlObjectConvertUtil;
 
-import javax.sip.message.Request;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 

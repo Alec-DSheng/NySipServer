@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.domain.DeviceInfo;
 import org.nee.ny.sip.nysipserver.domain.intefaces.MessageReqeust;
 import org.nee.ny.sip.nysipserver.utils.XmlObjectConvertUtil;
-import org.slf4j.Logger;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

@@ -30,7 +30,7 @@ public class VideoPlayCommand extends InviteCommandAbstract {
     public PlayCommandParams createPlayCommandParams(Device device, String channelId, String code) {
         StringBuilder contentBuild = new StringBuilder(200);
         contentBuild.append("v=0\r\n")
-                    .append("o=").append(channelId).append(" 0 0 IN IP4 ").append(sipServerProperties.getHost()).append("\r\n")
+                    .append("o=").append(channelId).append(" 0 0 IN IP4 ").append(sipServerProperties.getMediaIp()).append("\r\n")
                     .append("s=Play\r\n")
                     .append("c=IN IP4 ").append(sipServerProperties.getMediaIp()).append("\r\n")
                     .append("t=0 0\r\n");

@@ -1,6 +1,8 @@
 package org.nee.ny.sip.nysipserver.service.impl;
 
+import org.nee.ny.sip.nysipserver.configuration.SipServerProperties;
 import org.nee.ny.sip.nysipserver.domain.Device;
+import org.nee.ny.sip.nysipserver.domain.api.VideoInfoResponse;
 import org.nee.ny.sip.nysipserver.model.DeviceCacheOperatorModel;
 import org.nee.ny.sip.nysipserver.service.VideoPlayerService;
 import org.nee.ny.sip.nysipserver.transaction.command.Invite.VideoPlayCommand;
@@ -24,8 +26,11 @@ public class VideoPlayerServiceImpl implements VideoPlayerService {
     @Autowired
     private DeviceCacheOperatorModel deviceCacheOperatorModel;
 
+    @Autowired
+    private SipServerProperties sipServerProperties;
+
     @Override
-    public String player(String deviceId, String channelId) {
+    public VideoInfoResponse player(String deviceId, String channelId) {
         /**
          * 播放逻辑
          * 首先从redis中获取到device 的相关配置
@@ -33,14 +38,12 @@ public class VideoPlayerServiceImpl implements VideoPlayerService {
        Device device = Optional.ofNullable(deviceCacheOperatorModel.getDevice(deviceId)).orElseThrow(() ->
                 new NullPointerException("未发现相关设备,设备号 " + deviceId));
 
-
-
        String streamCode = deviceCacheOperatorModel.getStreamCode(deviceId, channelId);
        if (!StringUtils.hasLength(streamCode)) {
            streamCode = videoPlayCommand.sendCommand(device, channelId);
            deviceCacheOperatorModel.cacheStreamCode(deviceId, channelId, streamCode);
        }
-       return streamCode;
+       return new VideoInfoResponse(sipServerProperties.getMediaIp(), streamCode);
     }
 
     @Override

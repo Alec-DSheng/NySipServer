@@ -7,7 +7,6 @@ import org.nee.ny.sip.nysipserver.event.RegisterEvent;
 import org.nee.ny.sip.nysipserver.model.DeviceCacheOperatorModel;
 import org.nee.ny.sip.nysipserver.service.DeviceService;
 import org.nee.ny.sip.nysipserver.service.kafka.KafkaSender;
-import org.nee.ny.sip.nysipserver.service.kafka.SendSuccessCallback;
 import org.nee.ny.sip.nysipserver.transaction.command.message.CatalogQueryCommand;
 import org.nee.ny.sip.nysipserver.transaction.command.message.DeviceInfoQueryCommand;
 import org.springframework.beans.factory.annotation.Autowired;

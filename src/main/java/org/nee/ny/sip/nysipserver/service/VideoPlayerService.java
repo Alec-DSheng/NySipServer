@@ -1,5 +1,7 @@
 package org.nee.ny.sip.nysipserver.service;
 
+import org.nee.ny.sip.nysipserver.domain.api.VideoInfoResponse;
+
 /**
  * @Author: alec
  * Description:
@@ -10,7 +12,7 @@ public interface VideoPlayerService {
     /**
      * 播放
      * */
-    String player(String deviceId, String channelId);
+    VideoInfoResponse player(String deviceId, String channelId);
 
     /**
      * 停用

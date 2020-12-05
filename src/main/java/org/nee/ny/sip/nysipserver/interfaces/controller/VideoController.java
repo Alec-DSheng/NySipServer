@@ -1,6 +1,7 @@
 package org.nee.ny.sip.nysipserver.interfaces.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.nee.ny.sip.nysipserver.domain.api.VideoInfoResponse;
 import org.nee.ny.sip.nysipserver.service.VideoPlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,8 +24,8 @@ public class VideoController {
     private VideoPlayerService videoPlayerService;
 
     @GetMapping
-    public Mono<String> player(@RequestParam(value = "deviceId") String deviceId,
-                               @RequestParam(value = "channelId") String channelId) {
+    public Mono<VideoInfoResponse> player(@RequestParam(value = "deviceId") String deviceId,
+                                          @RequestParam(value = "channelId") String channelId) {
 
         return Mono.just(videoPlayerService.player(deviceId, channelId));
     }

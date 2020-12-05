@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import javax.sip.*;
+import javax.sip.header.CSeqHeader;
 import javax.sip.message.Request;
 import javax.sip.message.Response;
 
@@ -39,7 +40,13 @@ public class SipServerListeners implements SipListener {
     @Override
     public void processResponse(ResponseEvent responseEvent) {
         Response response = responseEvent.getResponse();
-        log.info("listeners response StatusCode {}, {}", response.getStatusCode(), response.getContent().toString());
+        int status = response.getStatusCode();
+        if ((status >= 200) && (status < 300)) {
+            log.info("响应恢复状态码 {}", status);
+            CSeqHeader cseqHeader = (CSeqHeader) response.getHeader(CSeqHeader.NAME);
+            String method = cseqHeader.getMethod();
+
+        }
     }
 
     @Override

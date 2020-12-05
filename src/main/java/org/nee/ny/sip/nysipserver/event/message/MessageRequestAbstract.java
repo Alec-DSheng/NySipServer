@@ -1,7 +1,6 @@
 package org.nee.ny.sip.nysipserver.event.message;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.nee.ny.sip.nysipserver.utils.XmlObjectConvertUtil;
 
 import javax.sip.RequestEvent;
 import javax.sip.message.Request;

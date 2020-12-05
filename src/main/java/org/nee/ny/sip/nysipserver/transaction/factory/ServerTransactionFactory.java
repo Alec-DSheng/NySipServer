@@ -54,6 +54,7 @@ public class ServerTransactionFactory {
 
     public ClientTransaction getClientTransaction(SipProvider sipTcpProvider, SipProvider sipUdpProvider,
                                                   String transport, Request request) throws TransactionUnavailableException {
+        log.info("{}",new String(request.getRawContent()));
         if (TransportType.TCP.name().equals(transport)) {
             return sipTcpProvider.getNewClientTransaction(request);
         }

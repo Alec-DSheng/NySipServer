@@ -59,7 +59,7 @@ public abstract class InviteCommandAbstract implements MessageCommand<PlayComman
 
     public String sendCommand(Device device,  String channelId) {
         String code = streamCodeSessionManager.createStreamCode();
-        String streamCode = String.format("%s%s%s", "0", sipServerProperties.getDomain().substring(3, 8), code);
+        String streamCode = String.format("%s%s", sipServerProperties.getDomain().substring(3, 8), code);
         log.info("分配推流code {}", streamCode);
         PlayCommandParams playCommandParams =  createPlayCommandParams(device, channelId, streamCode);
         sendCommand(playCommandParams);

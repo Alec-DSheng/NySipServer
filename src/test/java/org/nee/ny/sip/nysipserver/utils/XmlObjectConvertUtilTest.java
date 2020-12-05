@@ -1,7 +1,6 @@
 package org.nee.ny.sip.nysipserver.utils;
 
 import org.junit.jupiter.api.Test;
-import org.nee.ny.sip.nysipserver.event.message.MessageRequestAbstract;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
