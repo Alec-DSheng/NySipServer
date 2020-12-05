@@ -17,8 +17,11 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class VideoController {
 
-    @Autowired
-    private VideoPlayerService videoPlayerService;
+    private final VideoPlayerService videoPlayerService;
+
+    public VideoController(VideoPlayerService videoPlayerService) {
+        this.videoPlayerService = videoPlayerService;
+    }
 
     @GetMapping("/{deviceId}/{channelId}")
     public Mono<VideoInfoResponse> player(@PathVariable(value = "deviceId") String deviceId,

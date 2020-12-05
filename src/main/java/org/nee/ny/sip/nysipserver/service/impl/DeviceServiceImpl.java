@@ -9,7 +9,6 @@ import org.nee.ny.sip.nysipserver.service.DeviceService;
 import org.nee.ny.sip.nysipserver.service.kafka.KafkaSender;
 import org.nee.ny.sip.nysipserver.transaction.command.message.CatalogQueryCommand;
 import org.nee.ny.sip.nysipserver.transaction.command.message.DeviceInfoQueryCommand;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -30,17 +29,17 @@ public class DeviceServiceImpl implements DeviceService {
 
     private final CatalogQueryCommand catalogQueryCommand;
 
-    @Autowired
-    private SipServerProperties sipServerProperties;
+    private final SipServerProperties sipServerProperties;
 
-    @Autowired
-    private KafkaSender kafkaSender;
+    private final KafkaSender kafkaSender;
 
     public DeviceServiceImpl(DeviceCacheOperatorModel deviceCacheOperatorModel, DeviceInfoQueryCommand deviceInfoQueryCommand,
-                             CatalogQueryCommand catalogQueryCommand) {
+                             CatalogQueryCommand catalogQueryCommand, SipServerProperties sipServerProperties, KafkaSender kafkaSender) {
         this.deviceCacheOperatorModel = deviceCacheOperatorModel;
         this.deviceInfoQueryCommand = deviceInfoQueryCommand;
         this.catalogQueryCommand = catalogQueryCommand;
+        this.sipServerProperties = sipServerProperties;
+        this.kafkaSender = kafkaSender;
     }
 
     /**

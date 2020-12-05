@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.domain.intefaces.MessageHandler;
-import org.nee.ny.sip.nysipserver.event.MessageEventAbstract;
 import org.nee.ny.sip.nysipserver.utils.MD5Util;
 
 import javax.sip.header.AuthorizationHeader;

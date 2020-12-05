@@ -4,8 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.event.MessageEventAbstract;
 import org.nee.ny.sip.nysipserver.event.MessageResponseAbstract;
 import org.nee.ny.sip.nysipserver.listeners.factory.MessageEventFactory;
-import org.nee.ny.sip.nysipserver.transaction.response.MessageResponseHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
