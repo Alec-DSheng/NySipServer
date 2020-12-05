@@ -29,7 +29,7 @@ public class ResponseListeners {
     public void responseInvite(InviteResponseEvent inviteResponseEvent) {
         Response response =   inviteResponseEvent.getResponseEvent().getResponse();
         int statusCode = response.getStatusCode();
-        log.info("响应状态码 {}", statusCode);
+        log.info("响应状态码 1111111111111111111 {}", statusCode);
         if (response.getStatusCode() == HttpStatus.OK.value()) {
             Dialog dialog = inviteResponseEvent.getResponseEvent().getDialog();
             CSeqHeader cseq = (CSeqHeader) response.getHeader(CSeqHeader.NAME);
@@ -39,6 +39,7 @@ public class ResponseListeners {
                 reqAck = dialog.createAck(cseq.getSeqNumber());
                 SipURI requestURI = (SipURI) reqAck.getRequestURI();
                 ViaHeader viaHeader = (ViaHeader) response.getHeader(ViaHeader.NAME);
+                log.info("{}, {}", viaHeader.getPort(), viaHeader.getHost());
                 requestURI.setHost(viaHeader.getHost());
                 requestURI.setPort(viaHeader.getPort());
                 reqAck.setRequestURI(requestURI);

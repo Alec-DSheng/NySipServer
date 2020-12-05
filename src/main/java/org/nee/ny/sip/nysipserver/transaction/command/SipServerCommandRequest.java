@@ -90,7 +90,7 @@ public class SipServerCommandRequest implements SipRequest {
         String host = device.getHost() + ":" + device.getPort();
         try {
             SipURI requestLine = addressFactory.createSipURI(playerCommandParams.getChannelId(), host);
-            ViaHeader viaHeader = getViaHeader(transport, playerCommandParams.getVia());
+            ViaHeader viaHeader = getViaHeaderChannel(device, playerCommandParams.getVia());
             FromHeader fromHeader = getFromHeaderAddressChannel(playerCommandParams.getFrom());
             ToHeader toHeader = getToHeaderAddress(playerCommandParams.getChannelId(), playerCommandParams.getTo());
             CallIdHeader callIdHeader = ServerTransactionFactory.getInstance().getCallIdHeader(sipTcpProvider,
@@ -150,11 +150,10 @@ public class SipServerCommandRequest implements SipRequest {
         viaHeader.setRPort();
         return viaHeader;
     }
-//
-//    private ViaHeader getViaHeaderChannel(PlayerCommandParams playerCommandParams, String tag) throws ParseException, InvalidArgumentException {
-//        ViaHeader viaHeader = headerFactory.createViaHeader(playerCommandParams.getHost(),playerCommandParams.getPort(),
-//                playerCommandParams.getTransport(), tag);
-//        viaHeader.setRPort();
-//        return viaHeader;
-//    }
+
+    private ViaHeader getViaHeaderChannel(Device device, String tag) throws ParseException, InvalidArgumentException {
+        ViaHeader viaHeader = headerFactory.createViaHeader(device.getHost(),device.getPort(), device.getTransport(),tag);
+        viaHeader.setRPort();
+        return viaHeader;
+    }
 }
