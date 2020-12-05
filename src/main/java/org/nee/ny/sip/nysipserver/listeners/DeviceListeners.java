@@ -1,5 +1,6 @@
 package org.nee.ny.sip.nysipserver.listeners;
 
+import gov.nist.javax.sip.header.CSeq;
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.configuration.SipServerProperties;
 import org.nee.ny.sip.nysipserver.event.*;
@@ -13,8 +14,12 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import javax.sip.Dialog;
+import javax.sip.InvalidArgumentException;
 import javax.sip.RequestEvent;
+import javax.sip.SipException;
 import javax.sip.message.MessageFactory;
+import javax.sip.message.Request;
 import javax.sip.message.Response;
 import java.text.ParseException;
 
@@ -100,7 +105,17 @@ public class DeviceListeners {
 
     @EventListener
     public void ackMessage(AckEvent ackEvent) {
-        log.info("监听到ackEvent");
+        RequestEvent requestEvent = ackEvent.getRequestEvent();
+        Request request = requestEvent.getRequest();
+        Dialog dialog = requestEvent.getDialog();
+        Request ackRequest;
+        CSeq csReq = (CSeq) request.getHeader(CSeq.NAME);
+        try {
+            ackRequest = dialog.createAck(csReq.getSeqNumber());
+            dialog.sendAck(ackRequest);
+        } catch (InvalidArgumentException | SipException e) {
+            e.printStackTrace();
+        }
     }
 
     @EventListener

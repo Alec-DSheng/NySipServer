@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.domain.DeviceInfo;
-import org.nee.ny.sip.nysipserver.domain.intefaces.MessageReqeust;
+import org.nee.ny.sip.nysipserver.domain.intefaces.MessageRequest;
 import org.nee.ny.sip.nysipserver.utils.XmlObjectConvertUtil;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -16,7 +16,7 @@ import java.util.Optional;
  * Description:
  * @date: 11:34 2020-11-30
  */
-@MessageReqeust(name = "DeviceInfo")
+@MessageRequest(name = "DeviceInfo")
 @XmlRootElement(name = "Response")
 @Slf4j
 @ToString
