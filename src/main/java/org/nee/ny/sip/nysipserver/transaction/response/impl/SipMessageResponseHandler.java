@@ -58,4 +58,15 @@ public class SipMessageResponseHandler implements MessageResponseHandler {
         }
         return null;
     }
+
+    @Override
+    public void sendDialog(Dialog dialog, Request request, String transport) {
+        try {
+            ClientTransaction clientTransaction = ServerTransactionFactory.getInstance().
+                    getClientTransaction(sipTcpProvider, sipUdpProvider, transport,request);
+            dialog.sendRequest(clientTransaction);
+        } catch (SipException e) {
+            log.error("发送请求错误", e);
+        }
+    }
 }
