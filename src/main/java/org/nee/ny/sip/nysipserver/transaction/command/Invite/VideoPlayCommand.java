@@ -1,12 +1,23 @@
 package org.nee.ny.sip.nysipserver.transaction.command.Invite;
 
+import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.configuration.SipServerProperties;
 import org.nee.ny.sip.nysipserver.domain.Device;
 import org.nee.ny.sip.nysipserver.transaction.command.SipServerCommandRequest;
 import org.nee.ny.sip.nysipserver.transaction.response.MessageResponseHandler;
 import org.nee.ny.sip.nysipserver.transaction.session.StreamCodeSessionManager;
 import org.nee.ny.sip.nysipserver.transaction.session.TransactionSessionManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.sip.SipException;
+import javax.sip.address.SipURI;
+import javax.sip.header.ViaHeader;
+import javax.sip.message.Request;
+import java.text.ParseException;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -15,15 +26,25 @@ import org.springframework.stereotype.Component;
  * @date: 09:34 2020-12-04
  */
 @Component
+@Slf4j
 public class VideoPlayCommand extends InviteCommandAbstract {
 
     private final SipServerProperties sipServerProperties;
+
+    private final TransactionSessionManager transactionSessionManager;
+
+    private final MessageResponseHandler messageResponseHandler;
+
+    @Autowired
+
 
     public VideoPlayCommand(MessageResponseHandler messageResponseHandler, SipServerCommandRequest sipServerCommandRequest,
                             StreamCodeSessionManager streamCodeSessionManager, SipServerProperties sipServerProperties,
                             TransactionSessionManager transactionSessionManager) {
         super(messageResponseHandler, sipServerCommandRequest,streamCodeSessionManager,sipServerProperties,transactionSessionManager);
         this.sipServerProperties = sipServerProperties;
+        this.transactionSessionManager = transactionSessionManager;
+        this.messageResponseHandler = messageResponseHandler;
     }
 
     @Override
@@ -61,6 +82,30 @@ public class VideoPlayCommand extends InviteCommandAbstract {
         return playCommandParams;
     }
 
+    public void stopPlayer(String streamCode) {
+        transactionSessionManager.get(streamCode).ifPresent(clientTransaction -> {
+            Optional.ofNullable(clientTransaction.getDialog()).ifPresent(dialog -> {
+                try {
+                    Request request = dialog.createRequest(Request.BYE);
+                    SipURI sipURI = (SipURI) request.getRequestURI();
+                    String via = clientTransaction.getRequest().getHeader(ViaHeader.NAME).toString();
+                    Pattern pattern = Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+)\\:(\\d+)");
+                    Matcher matcher = pattern.matcher(via);
+                    if (matcher.find()) {
+                        sipURI.setHost(matcher.group(1));
+                    }
+                    ViaHeader viaHeader = (ViaHeader) request.getHeader(ViaHeader.NAME);
+                    String protocol = viaHeader.getTransport().toUpperCase();
+                    messageResponseHandler.sendDialog(dialog, request, protocol);
+                } catch (SipException e) {
+                    log.error("获取dialog err",e);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+
+    }
 
     @Override
     public String getFromTag() {
