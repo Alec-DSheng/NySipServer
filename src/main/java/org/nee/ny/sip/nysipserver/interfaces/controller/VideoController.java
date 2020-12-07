@@ -3,7 +3,6 @@ package org.nee.ny.sip.nysipserver.interfaces.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.domain.api.VideoInfoResponse;
 import org.nee.ny.sip.nysipserver.service.VideoPlayerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -23,10 +22,17 @@ public class VideoController {
         this.videoPlayerService = videoPlayerService;
     }
 
-    @GetMapping("/{deviceId}/{channelId}")
-    public Mono<VideoInfoResponse> player(@PathVariable(value = "deviceId") String deviceId,
+    @GetMapping("start/{deviceId}/{channelId}")
+    public Mono<VideoInfoResponse> startPlayer(@PathVariable(value = "deviceId") String deviceId,
                                           @PathVariable(value = "channelId") String channelId) {
 
         return Mono.just(videoPlayerService.player(deviceId, channelId));
+    }
+
+    @GetMapping("stop/{deviceId}/{channelId}")
+    public Mono<String> stopPlayer(@PathVariable(value = "deviceId") String deviceId,
+                                          @PathVariable(value = "channelId") String channelId) {
+
+        return Mono.just(videoPlayerService.stop(deviceId, channelId));
     }
 }
