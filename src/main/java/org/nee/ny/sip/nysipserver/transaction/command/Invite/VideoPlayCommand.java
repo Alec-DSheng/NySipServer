@@ -62,21 +62,6 @@ public class VideoPlayCommand extends InviteCommandAbstract {
         if("UDP".equals(device.getTransport())) {
             contentBuild.append("m=video ").append(sipServerProperties.getMediaPort()).append(" RTP/AVP 96 98 97\r\n");
         }
-        /**
-         * a=rtpmap:126 H264/90000
-         *
-         * a=fmtp:126 profile-level-id=42e01e
-         *
-         * a=rtpmap:125 H264S/90000
-         *
-         * a=fmtp:125 profile-level-id=42e01e
-         *
-         * a=rtpmap:99 MP4V-ES/90000
-         *
-         * a=fmtp:99 profile-level-id=3
-         *
-         * a=rtpmap:96 PS/90000
-         * */
         contentBuild.append("a=recvonly\r\n")
             .append("a=fmtp:126 profile-level-id=42e01e\r\n")
             .append("a=rtpmap:126 H264/90000\r\n")

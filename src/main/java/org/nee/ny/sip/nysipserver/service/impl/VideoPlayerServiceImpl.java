@@ -48,12 +48,12 @@ public class VideoPlayerServiceImpl implements VideoPlayerService {
     }
 
     @Override
-    public String stop(String deviceId, String channelId) {
+    public VideoInfoResponse stop(String deviceId, String channelId) {
         String streamCode = deviceCacheOperatorModel.getStreamCode(deviceId, channelId);
-        if (!StringUtils.hasLength(streamCode)) {
+        if (StringUtils.hasLength(streamCode)) {
             videoPlayCommand.stopPlayer(streamCode);
         }
-        return streamCode;
+        return new VideoInfoResponse(sipServerProperties.getMediaIp(), streamCode);
     }
 
     @Override
