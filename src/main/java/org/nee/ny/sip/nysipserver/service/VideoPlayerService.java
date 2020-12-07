@@ -18,7 +18,8 @@ public interface VideoPlayerService {
     /**
      * 停用
      * */
-    void stop();
+    String stop(String deviceId, String channelId);
+
 
     void playingVideo(VideoPlayer videoPlayer);
 }

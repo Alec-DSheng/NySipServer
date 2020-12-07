@@ -36,10 +36,7 @@ public class VideoPlayerServiceImpl implements VideoPlayerService {
 
     @Override
     public VideoInfoResponse player(String deviceId, String channelId) {
-        /**
-         * 播放逻辑
-         * 首先从redis中获取到device 的相关配置
-         * */
+
        Device device = Optional.ofNullable(deviceCacheOperatorModel.getDevice(deviceId)).orElseThrow(() ->
                 new NullPointerException("未发现相关设备,设备号 " + deviceId));
 
@@ -51,8 +48,12 @@ public class VideoPlayerServiceImpl implements VideoPlayerService {
     }
 
     @Override
-    public void stop() {
-
+    public String stop(String deviceId, String channelId) {
+        String streamCode = deviceCacheOperatorModel.getStreamCode(deviceId, channelId);
+        if (!StringUtils.hasLength(streamCode)) {
+            videoPlayCommand.stopPlayer(streamCode);
+        }
+        return streamCode;
     }
 
     @Override
