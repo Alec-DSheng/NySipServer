@@ -30,7 +30,7 @@ public class VideoController {
     }
 
     @GetMapping("stop/{deviceId}/{channelId}")
-    public Mono<String> stopPlayer(@PathVariable(value = "deviceId") String deviceId,
+    public Mono<VideoInfoResponse> stopPlayer(@PathVariable(value = "deviceId") String deviceId,
                                           @PathVariable(value = "channelId") String channelId) {
 
         return Mono.just(videoPlayerService.stop(deviceId, channelId));

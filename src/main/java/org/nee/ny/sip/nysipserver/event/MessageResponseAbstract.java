@@ -12,6 +12,7 @@ import javax.sip.header.CSeqHeader;
 import javax.sip.header.ViaHeader;
 import javax.sip.message.Request;
 import javax.sip.message.Response;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 
 /**
@@ -43,15 +44,16 @@ public abstract class MessageResponseAbstract {
         this.dialog = responseEvent.getDialog();
         response = responseEvent.getResponse();
         CSeqHeader cseq = (CSeqHeader) response.getHeader(CSeqHeader.NAME);
-        this.content = new String(response.getRawContent());
+
         try {
+            this.content = new String(response.getRawContent(), "gbk");
             this.reqAck = dialog.createAck(cseq.getSeqNumber());
             SipURI requestURI = (SipURI) reqAck.getRequestURI();
             ViaHeader viaHeader = (ViaHeader) response.getHeader(ViaHeader.NAME);
             requestURI.setHost(viaHeader.getHost());
             requestURI.setPort(viaHeader.getPort());
             reqAck.setRequestURI(requestURI);
-        } catch (InvalidArgumentException | SipException |ParseException e) {
+        } catch (InvalidArgumentException | SipException |ParseException | UnsupportedEncodingException e) {
             log.error("get request ack error ", e);
         }
     }

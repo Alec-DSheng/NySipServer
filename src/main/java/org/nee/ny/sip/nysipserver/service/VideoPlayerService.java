@@ -18,7 +18,7 @@ public interface VideoPlayerService {
     /**
      * 停用
      * */
-    String stop(String deviceId, String channelId);
+    VideoInfoResponse stop(String deviceId, String channelId);
 
 
     void playingVideo(VideoPlayer videoPlayer);
