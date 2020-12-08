@@ -71,7 +71,8 @@ public class VideoPlayCommand extends InviteCommandAbstract {
             .append("a=fmtp:99 profile-level-id=3\r\n")
             .append("a=rtpmap:96 PS/90000\r\n")
             .append("a=rtpmap:98 H264/90000\r\n")
-            .append("a=rtpmap:97 MPEG4/90000\r\n");
+            .append("a=rtpmap:97 MPEG4/90000\r\n")
+            .append("a=stream:1");
 
         if("TCP".equals(device.getTransport())){
             contentBuild.append("a=setup:passive\r\n")
