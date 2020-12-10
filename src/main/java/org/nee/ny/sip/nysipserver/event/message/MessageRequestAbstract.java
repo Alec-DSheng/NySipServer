@@ -30,6 +30,7 @@ public abstract class MessageRequestAbstract {
         Request request = requestEvent.getRequest();
         try {
             this.content = new String(request.getRawContent(), "gbk");
+            log.info("{}", this.content);
         } catch (UnsupportedEncodingException e) {
             log.error("解析编码错误", e);
         }

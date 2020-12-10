@@ -25,14 +25,12 @@ public class VideoController {
     @GetMapping("start/{deviceId}/{channelId}")
     public Mono<VideoInfoResponse> startPlayer(@PathVariable(value = "deviceId") String deviceId,
                                           @PathVariable(value = "channelId") String channelId) {
-
         return Mono.just(videoPlayerService.player(deviceId, channelId));
     }
 
     @GetMapping("stop/{deviceId}/{channelId}")
     public Mono<VideoInfoResponse> stopPlayer(@PathVariable(value = "deviceId") String deviceId,
                                           @PathVariable(value = "channelId") String channelId) {
-
         return Mono.just(videoPlayerService.stop(deviceId, channelId));
     }
 }
