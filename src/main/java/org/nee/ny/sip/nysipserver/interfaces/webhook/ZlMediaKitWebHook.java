@@ -1,17 +1,13 @@
 package org.nee.ny.sip.nysipserver.interfaces.webhook;
 
-import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.interfaces.webhook.kit.ZlMediaKitRequest;
 import org.nee.ny.sip.nysipserver.interfaces.webhook.kit.ZlMediaKitResponse;
 import org.nee.ny.sip.nysipserver.service.VideoPlayerService;
-import org.nee.ny.sip.nysipserver.utils.IntentAddressUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ServerWebExchange;
 
 import java.text.DecimalFormat;
 import java.util.Map;
@@ -26,9 +22,11 @@ import java.util.Map;
 @Slf4j
 public class ZlMediaKitWebHook {
 
+    private final VideoPlayerService videoPlayerService;
 
-    @Autowired
-    private VideoPlayerService videoPlayerService;
+    public ZlMediaKitWebHook(VideoPlayerService videoPlayerService) {
+        this.videoPlayerService = videoPlayerService;
+    }
 
 
     /**
@@ -46,17 +44,18 @@ public class ZlMediaKitWebHook {
      * */
     @PostMapping(value = "on_stream_changed")
     public ZlMediaKitResponse onStreamChanged(@RequestBody ZlMediaKitRequest zlMediaKitRequest) {
-        log.info("监听到流注册或注销时触发 {}", zlMediaKitRequest);
+        if (!zlMediaKitRequest.isRtp()) {
+            return ZlMediaKitResponse.responseSuccess();
+        }
+        log.info("监听到流触发 {} - {}", zlMediaKitRequest.isRegist() ? "注册" : "注销", zlMediaKitRequest);
         String streamCode = new DecimalFormat("0000000000").format(Integer.parseInt(zlMediaKitRequest.getStream(),
                 16));
-        //避免多次请求
-
         if (zlMediaKitRequest.isRegist()) {
             log.info("处理流注册回调逻辑");
             videoPlayerService.playingVideo(streamCode);
-            return ZlMediaKitResponse.responseSuccess();
+        } else {
+            log.info("注销一个视频");
         }
-        videoPlayerService.cancelPlaying(streamCode);
         return ZlMediaKitResponse.responseSuccess();
     }
 

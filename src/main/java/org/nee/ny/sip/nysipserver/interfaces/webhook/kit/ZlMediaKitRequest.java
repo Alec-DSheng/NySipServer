@@ -25,4 +25,8 @@ public class ZlMediaKitRequest {
 
     //流注册或注销
     private boolean regist;
+
+    public Boolean isRtp () {
+        return schema.equals("rtsp");
+    }
 }
