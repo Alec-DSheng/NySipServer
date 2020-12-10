@@ -12,4 +12,6 @@ public interface DeviceCommonKey {
     String heart = "H_NO:"; //记录设备心跳
 
     String stream = "SSCODE:";
+
+    String streamCode = "SC:";
 }

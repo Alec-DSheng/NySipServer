@@ -14,10 +14,7 @@ public class InviteEvent extends MessageEventAbstract {
 
     @Override
     public void load() {
-        log.info("接收到设备上报 INVITE 消息, 需要进行分类处理");
-
        byte[] bs =  requestEvent.getRequest().getRawContent();
-
        String content = new String(bs);
        log.info("invite {}", content);
     }

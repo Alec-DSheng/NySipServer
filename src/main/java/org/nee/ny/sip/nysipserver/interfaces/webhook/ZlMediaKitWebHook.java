@@ -4,13 +4,16 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.interfaces.webhook.kit.ZlMediaKitRequest;
 import org.nee.ny.sip.nysipserver.interfaces.webhook.kit.ZlMediaKitResponse;
+import org.nee.ny.sip.nysipserver.service.VideoPlayerService;
 import org.nee.ny.sip.nysipserver.utils.IntentAddressUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
+import java.text.DecimalFormat;
 import java.util.Map;
 
 /**
@@ -24,6 +27,8 @@ import java.util.Map;
 public class ZlMediaKitWebHook {
 
 
+    @Autowired
+    private VideoPlayerService videoPlayerService;
 
 
     /**
@@ -36,10 +41,23 @@ public class ZlMediaKitWebHook {
 
     /**
      * rtsp / rtmp 流注册或注销时触发
+     * 流注册,注销用户缓存和清除在推流的sscode
+     * 当发生流注册时此时缓存流的相关数据。
      * */
     @PostMapping(value = "on_stream_changed")
-    public void onStreamChanged(@RequestBody JSONObject jsonObject) {
-        log.info("监听到流注册或注销时触发 {}", jsonObject);
+    public ZlMediaKitResponse onStreamChanged(@RequestBody ZlMediaKitRequest zlMediaKitRequest) {
+        log.info("监听到流注册或注销时触发 {}", zlMediaKitRequest);
+        String streamCode = new DecimalFormat("0000000000").format(Integer.parseInt(zlMediaKitRequest.getStream(),
+                16));
+        //避免多次请求
+
+        if (zlMediaKitRequest.isRegist()) {
+            log.info("处理流注册回调逻辑");
+            videoPlayerService.playingVideo(streamCode);
+            return ZlMediaKitResponse.responseSuccess();
+        }
+        videoPlayerService.cancelPlaying(streamCode);
+        return ZlMediaKitResponse.responseSuccess();
     }
 
 
@@ -47,9 +65,11 @@ public class ZlMediaKitWebHook {
      * 流无人观看触发
      * */
     @PostMapping(value = "on_stream_none_reader")
-    public ZlMediaKitResponse onStreamNoneReader(@RequestBody JSONObject jsonObject) {
-        log.info("监听到无人观看事件 {}", jsonObject);
-
+    public ZlMediaKitResponse onStreamNoneReader(@RequestBody ZlMediaKitRequest zlMediaKitRequest) {
+        log.info("监听到无人观看事件 {}", zlMediaKitRequest);
+        String streamCode = new DecimalFormat("0000000000").format(Integer.parseInt(zlMediaKitRequest.getStream(),
+                16));
+        videoPlayerService.stop(streamCode);
         return ZlMediaKitResponse.reposeNoReader(true);
     }
 
@@ -57,8 +77,17 @@ public class ZlMediaKitWebHook {
      * 流未找到事件，实现按需拉流
      * */
     @PostMapping(value = "on_stream_not_found")
-    public ZlMediaKitResponse onStreamNotFound() {
-        log.info("流未发现事件,做拉流处理");
+    public ZlMediaKitResponse onStreamNotFound(@RequestBody ZlMediaKitRequest zlMediaKitRequest) {
+        log.info("流未发现事件,做拉流处理 {}", zlMediaKitRequest);
+        return ZlMediaKitResponse.responsePublishSuccess();
+    }
+
+    /**
+     * 播放器权鉴
+     * */
+    @PostMapping(value = "on_play")
+    public ZlMediaKitResponse onPlay(@RequestBody ZlMediaKitRequest zlMediaKitRequest) {
+        log.info("on_publish {}", zlMediaKitRequest);
         return ZlMediaKitResponse.responsePublishSuccess();
     }
 
