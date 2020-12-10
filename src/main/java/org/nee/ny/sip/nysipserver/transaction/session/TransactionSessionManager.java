@@ -3,6 +3,7 @@ package org.nee.ny.sip.nysipserver.transaction.session;
 import org.springframework.stereotype.Component;
 
 import javax.sip.ClientTransaction;
+import javax.sip.Dialog;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,6 +24,13 @@ public class TransactionSessionManager {
     }
 
     public Optional<ClientTransaction> get(String streamCode) {
-        return Optional.of(TRANSACTION_MAP.get(streamCode));
+        return Optional.ofNullable(TRANSACTION_MAP.get(streamCode));
+    }
+
+    public void destroy(String streamCode) {
+        get(streamCode).ifPresent(clientTransaction -> {
+            Optional.ofNullable(clientTransaction.getDialog()).ifPresent(Dialog::delete);
+            TRANSACTION_MAP.remove(streamCode);
+        });
     }
 }

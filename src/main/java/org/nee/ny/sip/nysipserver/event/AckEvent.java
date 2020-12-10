@@ -6,9 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.domain.intefaces.MessageHandler;
 
 import javax.sip.Dialog;
-import javax.sip.InvalidArgumentException;
-import javax.sip.RequestEvent;
-import javax.sip.SipException;
 import javax.sip.message.Request;
 
 /**
@@ -28,19 +25,9 @@ public class AckEvent extends MessageEventAbstract {
 
     @Override
     public void load() {
-
         Request request = requestEvent.getRequest();
         this.dialog = requestEvent.getDialog();
         CSeq csReq = (CSeq) request.getHeader(CSeq.NAME);
         seqNumber = csReq.getSeqNumber();
-//        CSeq csReq = (CSeq) requestEvent.getRequest().getHeader(CSeq.NAME);
-//        try {
-//            log.info("{}", requestEvent.getDialog());
-//            log.info("{}", csReq);
-//            this.ackRequest = requestEvent.getDialog().createAck(csReq.getSeqNumber());
-//        } catch (InvalidArgumentException | SipException e) {
-//            e.printStackTrace();
-//            log.error("ack error ", e);
-//        }
     }
 }

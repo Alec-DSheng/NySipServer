@@ -1,10 +1,12 @@
 package org.nee.ny.sip.nysipserver.model;
 
 import lombok.extern.slf4j.Slf4j;
+import org.nee.ny.sip.nysipserver.configuration.SipServerProperties;
 import org.nee.ny.sip.nysipserver.domain.Device;
 import org.nee.ny.sip.nysipserver.domain.DeviceCommonKey;
 import org.nee.ny.sip.nysipserver.event.RegisterEvent;
 import org.nee.ny.sip.nysipserver.utils.DateUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -24,8 +26,11 @@ public class DeviceCacheOperatorModel {
 
     private final static int EXPIRE_TIME = 3;
 
-    public DeviceCacheOperatorModel(RedisTemplate<String, String> redisTemplate) {
+    private final SipServerProperties sipServerProperties;
+
+    public DeviceCacheOperatorModel(RedisTemplate<String, String> redisTemplate, SipServerProperties sipServerProperties) {
         this.redisTemplate = redisTemplate;
+        this.sipServerProperties = sipServerProperties;
     }
 
     public void deleteValue(String key) {
@@ -69,13 +74,37 @@ public class DeviceCacheOperatorModel {
         return StringUtils.hasLength(heartValue);
     }
 
-    public void cacheStreamCode(String deviceId, String channelId, String streamCode) {
-        String key = String.format("%s%s:%s", DeviceCommonKey.stream, deviceId, channelId);
+
+    public void cacheStreamCode(String deviceKey, String streamCode) {
+        String key = String.format("%s%s", DeviceCommonKey.stream, deviceKey);
         redisTemplate.opsForValue().set(key, streamCode);
     }
+
+    public void removeStreamCode(String deviceKey) {
+        String key = String.format("%s%s", DeviceCommonKey.stream, deviceKey);
+        redisTemplate.delete(key);
+    }
+
 
     public String getStreamCode(String deviceId, String channelId) {
         String key = String.format("%s%s:%s", DeviceCommonKey.stream, deviceId, channelId);
         return redisTemplate.opsForValue().get(key);
+    }
+
+    //以StreamCode 为 key 缓存 设备终端序列号
+    public void cacheDeviceAndChannel(String deviceId, String channelId, String streamCode) {
+        String key =  String.format("%s%s:%s", DeviceCommonKey.streamCode, sipServerProperties.getDomain(), streamCode);
+        redisTemplate.opsForValue().set(key, String.format("%s:%s", deviceId, channelId));
+    }
+
+
+    public String getDeviceAndChannel(String streamCode) {
+        String key = String.format("%s%s:%s", DeviceCommonKey.streamCode, sipServerProperties.getDomain(), streamCode);
+        return redisTemplate.opsForValue().get(key);
+    }
+
+    public void removeDeviceAndChannel(String streamCode) {
+        String key = String.format("%s%s:%s", DeviceCommonKey.streamCode, sipServerProperties.getDomain(), streamCode);
+        redisTemplate.delete(key);
     }
 }
