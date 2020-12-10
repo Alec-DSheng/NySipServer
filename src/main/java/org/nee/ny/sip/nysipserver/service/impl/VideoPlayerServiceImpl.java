@@ -1,5 +1,6 @@
 package org.nee.ny.sip.nysipserver.service.impl;
 
+import com.sun.javaws.exceptions.ErrorCodeResponseException;
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.configuration.SipServerProperties;
 import org.nee.ny.sip.nysipserver.domain.Device;
@@ -43,16 +44,23 @@ public class VideoPlayerServiceImpl implements VideoPlayerService {
 
     @Override
     public VideoInfoResponse player(String deviceId, String channelId) {
-
        Device device = Optional.ofNullable(deviceCacheOperatorModel.getDevice(deviceId)).orElseThrow(() ->
                 new NullPointerException("未发现相关设备,设备号 " + deviceId));
+       String streamCode = deviceCacheOperatorModel.getStreamCode(deviceId, channelId);
+       if (!StringUtils.hasLength(streamCode)) {
+           streamCode = sendPlayer(device, channelId);
+           return new VideoInfoResponse(sipServerProperties.getMediaIp(), streamCode);
+       }
+       //调用流媒体服务结构判断流节点是否
+        return new VideoInfoResponse(sipServerProperties.getMediaIp(), streamCode);
+    }
 
-//       String streamCode = deviceCacheOperatorModel.getStreamCode(deviceId, channelId);
-//       if (!StringUtils.hasLength(streamCode)) {
-//           streamCode =  videoPlayCommand.sendCommand(device, channelId);
-//       }
-       String streamCode = videoPlayCommand.sendCommand(device, channelId);
-       return new VideoInfoResponse(sipServerProperties.getMediaIp(), streamCode);
+    private String sendPlayer(Device device, String channelId) {
+       String streamCode;
+       synchronized (this) {
+           streamCode = videoPlayCommand.sendCommand(device, channelId);
+       }
+       return streamCode;
     }
 
     @Override
@@ -88,6 +96,7 @@ public class VideoPlayerServiceImpl implements VideoPlayerService {
      * */
     @Override
     public void playingVideo(String streamCode) {
+       //检查是否已缓存好数据
        String deviceKey = deviceCacheOperatorModel.getDeviceAndChannel(streamCode);
        if (!StringUtils.hasLength(deviceKey)) {
            //当前streamCode 未对应具体设备逻辑。发送停止推流
