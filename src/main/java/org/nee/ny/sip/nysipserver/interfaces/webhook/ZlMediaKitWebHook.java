@@ -108,6 +108,7 @@ public class ZlMediaKitWebHook {
     @PostMapping(value = "on_server_started", produces = "application/json;charset=UTF-8")
     public ZlMediaKitResponse onServerStarted(@RequestBody Map<String, Object> zlMediaKitRequest) {
         log.info("on_publish {}", zlMediaKitRequest);
+
         return ZlMediaKitResponse.responseSuccess();
     }
 }
