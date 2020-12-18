@@ -51,7 +51,7 @@ public class VideoPlayerServiceImpl implements VideoPlayerService {
            streamCode = sendPlayer(device, channelId);
            return new VideoInfoResponse(sipServerProperties.getMediaIp(), streamCode);
        }
-       //调用流媒体服务结构判断流节点是否
+       //直接返回，由客户端重试拉流，触发流未找到是发起按需拉流操作
         return new VideoInfoResponse(sipServerProperties.getMediaIp(), streamCode);
     }
 

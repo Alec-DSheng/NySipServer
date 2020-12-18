@@ -53,8 +53,6 @@ public class ZlMediaKitWebHook {
         if (zlMediaKitRequest.isRegist()) {
             log.info("处理流注册回调逻辑");
             videoPlayerService.playingVideo(streamCode);
-        } else {
-            log.info("注销一个视频");
         }
         return ZlMediaKitResponse.responseSuccess();
     }
@@ -78,6 +76,7 @@ public class ZlMediaKitWebHook {
     @PostMapping(value = "on_stream_not_found")
     public ZlMediaKitResponse onStreamNotFound(@RequestBody ZlMediaKitRequest zlMediaKitRequest) {
         log.info("流未发现事件,做拉流处理 {}", zlMediaKitRequest);
+
         return ZlMediaKitResponse.responsePublishSuccess();
     }
 

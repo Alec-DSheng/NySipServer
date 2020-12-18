@@ -72,7 +72,7 @@ public class VideoPlayCommand extends InviteCommandAbstract {
             .append("a=rtpmap:96 PS/90000\r\n")
             .append("a=rtpmap:98 H264/90000\r\n")
             .append("a=rtpmap:97 MPEG4/90000\r\n")
-            .append("a=stream:1");
+            .append("a=stream:1\r\n");
 
         if("TCP".equals(device.getTransport())){
             contentBuild.append("a=setup:passive\r\n")
@@ -80,7 +80,7 @@ public class VideoPlayCommand extends InviteCommandAbstract {
         }
         String streamCode = "0" + code;
         contentBuild.append("y=").append(streamCode).append("\r\n");
-
+        log.info("{}", contentBuild.toString());
         PlayCommandParams playCommandParams = new PlayCommandParams();
         playCommandParams.setContent(contentBuild.toString());
         playCommandParams.setDevice(device);
