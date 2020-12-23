@@ -37,7 +37,6 @@ public class MessageListeners {
     public void deviceRegister(KeepLiveMessageRequest keepLiveMessageRequest) {
         keepLiveMessageRequest = (KeepLiveMessageRequest) keepLiveMessageRequest.getMessageRequestAbstract();
         log.info("当前对应心跳数据{}", keepLiveMessageRequest);
-        //设备上线处理逻辑
         deviceService.dealDeviceOnline(keepLiveMessageRequest.getDeviceId());
     }
 

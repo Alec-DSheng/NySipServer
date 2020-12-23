@@ -46,6 +46,7 @@ public class DeviceInfoMessageRequest  extends MessageRequestAbstract  {
     public void load() {
         super.load();
         String content = this.content;
+        log.info("接受到 info 日志 {}", content);
         DeviceInfoMessageRequest deviceInfoMessageRequest = (DeviceInfoMessageRequest) XmlObjectConvertUtil.xmlConvertObject(content, this);
         Optional.ofNullable(deviceInfoMessageRequest).ifPresent(device ->
                 this.deviceInfo = DeviceInfo.builder().

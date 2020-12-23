@@ -12,7 +12,6 @@ public class NySipServerApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(NySipServerApplication.class, args);
-        log.info("~~~~~~~~~~~SIP 信令调度服务器启动~~~~~~~~~~~~~~~~");
     }
 
 }

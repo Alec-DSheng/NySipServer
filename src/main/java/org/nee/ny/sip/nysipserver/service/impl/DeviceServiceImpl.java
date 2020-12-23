@@ -3,6 +3,7 @@ package org.nee.ny.sip.nysipserver.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.configuration.SipServerProperties;
 import org.nee.ny.sip.nysipserver.domain.*;
+import org.nee.ny.sip.nysipserver.domain.enums.ChannelStatus;
 import org.nee.ny.sip.nysipserver.event.RegisterEvent;
 import org.nee.ny.sip.nysipserver.model.DeviceCacheOperatorModel;
 import org.nee.ny.sip.nysipserver.service.DeviceService;
@@ -61,6 +62,9 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public void dealDeviceOffline(String deviceNo) {
         log.info("向上发送下线事件");
+        DeviceLineInfo deviceLineInfo = DeviceLineInfo.builder().deviceId(deviceNo).lineStatus(ChannelStatus.OFF.getCode()).build();
+        kafkaSender.sendMessage(Constants.TOPIC_DEVICE_OFFLINE,
+                new EventEnvelope<>(Constants.TYPE_CHANNEL, deviceLineInfo));
     }
 
     /**
@@ -72,8 +76,13 @@ public class DeviceServiceImpl implements DeviceService {
     public void dealDeviceOnline(String deviceNo) {
         boolean hasHeart = deviceCacheOperatorModel.hasHeart(deviceNo);
         if (!hasHeart) {
-            //发送上线事件
             log.info("向上发送上线事件");
+            Optional.ofNullable(deviceCacheOperatorModel.getDevice(deviceNo)).ifPresent(device -> {
+                DeviceLineInfo deviceLineInfo = DeviceLineInfo.builder().deviceId(deviceNo).lineStatus(ChannelStatus.ON.getCode()).build();
+                kafkaSender.sendMessage(Constants.TOPIC_DEVICE_ONLINE,
+                        new EventEnvelope<>(Constants.TYPE_CHANNEL, deviceLineInfo));
+                catalogQueryCommand.sendCommand(device);
+            });
         }
         deviceCacheOperatorModel.recordHeart(deviceNo);
     }

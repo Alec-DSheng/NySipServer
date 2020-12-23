@@ -28,8 +28,17 @@ public class DeviceChannelServiceImpl implements DeviceChannelService {
     @Override
     public void channelReport(List<DeviceChannel> deviceChannelList) {
         log.info("send msg {}", deviceChannelList);
-         deviceChannelList.forEach(deviceChannel ->
-             kafkaSender.sendMessage(Constants.TOPIC_DEVICE_CHANNEL_REGISTER,
-             new EventEnvelope<>(Constants.TYPE_CHANNEL, deviceChannel)));
+        for (int i = 0; i < deviceChannelList.size(); i++) {
+            DeviceChannel deviceChannel = deviceChannelList.get(i);
+            if (i < 100) {
+                deviceChannel.setNo(String.format("%02d", i));
+            }
+            //第一个channel 带总数
+            if (i != 0) {
+                deviceChannel.setChannelNum(null);
+            }
+            kafkaSender.sendMessage(Constants.TOPIC_DEVICE_CHANNEL_REGISTER,
+                     new EventEnvelope<>(Constants.TYPE_CHANNEL, deviceChannel));
+        }
     }
 }

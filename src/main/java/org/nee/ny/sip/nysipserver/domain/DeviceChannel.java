@@ -15,6 +15,8 @@ import lombok.*;
 @ToString
 public class DeviceChannel {
 
+    private String no;
+
     private String code;
 
     private String deviceId;
@@ -38,4 +40,12 @@ public class DeviceChannel {
     private Integer status;
 
     private Integer num;
+
+    private Integer safetyWay;
+
+    private Integer parental;
+
+    private String parentId;
+
+    private Integer channelNum;
 }

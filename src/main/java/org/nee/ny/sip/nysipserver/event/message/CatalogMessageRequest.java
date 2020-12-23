@@ -57,6 +57,10 @@ public class CatalogMessageRequest  extends MessageRequestAbstract   {
                             .owner(item.getOwner())
                             .registerWay(item.getRegisterWay())
                             .secret(item.getSecrecy())
+                            .parental(item.getParental())
+                            .parentId(item.getParentId())
+                            .safetyWay(item.getSafetyWay())
+                            .channelNum(channel.getSumNum())
                             .status(ChannelStatus.codeByName(item.getStatus()).orElseThrow(NullPointerException::new))
                             .build()).collect(Collectors.toList()));
         } catch (Exception e) {
@@ -151,6 +155,8 @@ public class CatalogMessageRequest  extends MessageRequestAbstract   {
         private Integer  secrecy;
 
         private String  status;
+
+        private Integer safetyWay;
 
         public String getDeviceId() {
             return deviceId;
@@ -258,6 +264,14 @@ public class CatalogMessageRequest  extends MessageRequestAbstract   {
         @XmlElement(name = "Status")
         public void setStatus(String status) {
             this.status = status;
+        }
+
+        public Integer getSafetyWay() {
+            return safetyWay;
+        }
+        @XmlElement(name = "SafetyWay")
+        public void setSafetyWay(Integer safetyWay) {
+            this.safetyWay = safetyWay;
         }
     }
 }
