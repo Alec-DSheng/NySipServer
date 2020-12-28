@@ -1,13 +1,17 @@
 package org.nee.ny.sip.nysipserver.interfaces.webhook;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.nee.ny.sip.nysipserver.configuration.RetrieveClientWebFilter;
 import org.nee.ny.sip.nysipserver.interfaces.webhook.kit.ZlMediaKitRequest;
 import org.nee.ny.sip.nysipserver.interfaces.webhook.kit.ZlMediaKitResponse;
 import org.nee.ny.sip.nysipserver.service.VideoPlayerService;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ServerWebExchange;
 
 import java.text.DecimalFormat;
 import java.util.Map;
@@ -104,9 +108,9 @@ public class ZlMediaKitWebHook {
      * 记录服务器上线日志
      * 存储流媒体服务，做内部负载
      * */
-    @PostMapping(value = "on_server_started", produces = "application/json;charset=UTF-8")
-    public ZlMediaKitResponse onServerStarted(@RequestBody Map<String, Object> zlMediaKitRequest) {
-        log.info("on_publish {}", zlMediaKitRequest);
+    @PostMapping(value = "on_server_started")
+    public ZlMediaKitResponse onServerStarted(@RequestBody String mediaConfig, ServerHttpRequest httpRequest) {
+        log.info("on_publish {}- ip {} ", mediaConfig, httpRequest.getHeaders().getFirst(RetrieveClientWebFilter.IP_HEADER));
 
         return ZlMediaKitResponse.responseSuccess();
     }

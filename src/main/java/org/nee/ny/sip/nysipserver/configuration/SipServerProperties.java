@@ -42,9 +42,4 @@ public class SipServerProperties {
         Inet4Address ip = IntentAddressUtil.getLocalIp4Address().orElseThrow(() -> new UnknownHostException("IP地址获取失败"));;
         this.host = ip.getHostAddress();
     }
-
-//    public String getSipHost() {
-
-//        return  ip.getHostAddress();
-//    }
 }

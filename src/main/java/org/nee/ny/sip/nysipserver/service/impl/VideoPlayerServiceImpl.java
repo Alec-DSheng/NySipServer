@@ -52,7 +52,7 @@ public class VideoPlayerServiceImpl implements VideoPlayerService {
            return new VideoInfoResponse(sipServerProperties.getMediaIp(), streamCode);
        }
        //直接返回，由客户端重试拉流，触发流未找到是发起按需拉流操作
-        return new VideoInfoResponse(sipServerProperties.getMediaIp(), streamCode);
+       return new VideoInfoResponse(sipServerProperties.getMediaIp(), streamCode);
     }
 
     private String sendPlayer(Device device, String channelId) {
