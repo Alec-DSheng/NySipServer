@@ -3,6 +3,7 @@ package org.nee.ny.sip.nysipserver.interfaces.webhook;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.configuration.RetrieveClientWebFilter;
+import org.nee.ny.sip.nysipserver.domain.ZlMediaKitServer;
 import org.nee.ny.sip.nysipserver.interfaces.webhook.kit.ZlMediaKitRequest;
 import org.nee.ny.sip.nysipserver.interfaces.webhook.kit.ZlMediaKitResponse;
 import org.nee.ny.sip.nysipserver.service.VideoPlayerService;
@@ -11,10 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ServerWebExchange;
 
 import java.text.DecimalFormat;
-import java.util.Map;
+import java.util.Optional;
 
 /**
  * @Author: alec
@@ -110,8 +110,21 @@ public class ZlMediaKitWebHook {
      * */
     @PostMapping(value = "on_server_started")
     public ZlMediaKitResponse onServerStarted(@RequestBody String mediaConfig, ServerHttpRequest httpRequest) {
-        log.info("on_publish {}- ip {} ", mediaConfig, httpRequest.getHeaders().getFirst(RetrieveClientWebFilter.IP_HEADER));
-
+        Optional.ofNullable(JSONObject.parseObject(mediaConfig)).ifPresent(jsonObject -> {
+            String ip = httpRequest.getHeaders().getFirst(RetrieveClientWebFilter.IP_HEADER);
+            ZlMediaKitServer server = ZlMediaKitServer.builder().mediaServerId(jsonObject.getString("mediaServerId"))
+                    .secret(jsonObject.getString("api.secret"))
+                    .ffmpegCmd(jsonObject.getString("ffmpeg.cmd"))
+                    .httpCharSet(jsonObject.getString("http.charSet"))
+                    .httpPort(jsonObject.getString("http.port"))
+                    .httpSslPort(jsonObject.getString("http.sslport"))
+                    .rtmpPort(jsonObject.getString("rtmp.port"))
+                    .rtpProxyPort(jsonObject.getString("rtp_proxy.port"))
+                    .rtspPort(jsonObject.getString("rtsp.port"))
+                    .rtmpSslPort(jsonObject.getString("rtmp.sslport"))
+                    .ip(ip).registerTime(System.currentTimeMillis()).build();
+            log.info("流媒体服务器实例 {}", server);
+        });
         return ZlMediaKitResponse.responseSuccess();
     }
 }
