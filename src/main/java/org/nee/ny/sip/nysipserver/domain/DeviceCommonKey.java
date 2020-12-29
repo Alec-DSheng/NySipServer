@@ -14,4 +14,6 @@ public interface DeviceCommonKey {
     String stream = "SSCODE:";
 
     String streamCode = "SC:";
+
+    String SERVER = "KIT";
 }

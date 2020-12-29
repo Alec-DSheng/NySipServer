@@ -12,6 +12,7 @@ import lombok.*;
 @Setter
 @Builder
 @NoArgsConstructor
+@ToString
 public class DeviceLineInfo {
 
     private String deviceId;

@@ -7,6 +7,7 @@ import org.nee.ny.sip.nysipserver.domain.ZlMediaKitServer;
 import org.nee.ny.sip.nysipserver.interfaces.webhook.kit.ZlMediaKitRequest;
 import org.nee.ny.sip.nysipserver.interfaces.webhook.kit.ZlMediaKitResponse;
 import org.nee.ny.sip.nysipserver.service.VideoPlayerService;
+import org.nee.ny.sip.nysipserver.service.ZLMediaKitService;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,8 +29,11 @@ public class ZlMediaKitWebHook {
 
     private final VideoPlayerService videoPlayerService;
 
-    public ZlMediaKitWebHook(VideoPlayerService videoPlayerService) {
+    private final ZLMediaKitService zlMediaKitService;
+
+    public ZlMediaKitWebHook(VideoPlayerService videoPlayerService, ZLMediaKitService zlMediaKitService) {
         this.videoPlayerService = videoPlayerService;
+        this.zlMediaKitService = zlMediaKitService;
     }
 
 
@@ -124,6 +128,7 @@ public class ZlMediaKitWebHook {
                     .rtmpSslPort(jsonObject.getString("rtmp.sslport"))
                     .ip(ip).registerTime(System.currentTimeMillis()).build();
             log.info("流媒体服务器实例 {}", server);
+            zlMediaKitService.register(server);
         });
         return ZlMediaKitResponse.responseSuccess();
     }

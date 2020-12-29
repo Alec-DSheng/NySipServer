@@ -64,7 +64,7 @@ public class DeviceServiceImpl implements DeviceService {
         log.info("向上发送下线事件");
         DeviceLineInfo deviceLineInfo = DeviceLineInfo.builder().deviceId(deviceNo).lineStatus(ChannelStatus.OFF.getCode()).build();
         kafkaSender.sendMessage(Constants.TOPIC_DEVICE_OFFLINE,
-                new EventEnvelope<>(Constants.TYPE_CHANNEL, deviceLineInfo));
+                new EventEnvelope<>(Constants.TYPE_CHANNEL, deviceLineInfo), () -> deviceCacheOperatorModel.clearHeart(deviceNo));
     }
 
     /**
@@ -120,4 +120,9 @@ public class DeviceServiceImpl implements DeviceService {
 
     }
 
+    @Override
+    public void loadChannel(String deviceId) {
+        Optional.ofNullable(deviceCacheOperatorModel.getDevice(deviceId))
+                .ifPresent(catalogQueryCommand::sendCommand);
+    }
 }

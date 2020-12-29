@@ -2,7 +2,6 @@ package org.nee.ny.sip.nysipserver.service;
 
 import org.nee.ny.sip.nysipserver.domain.VideoPlayer;
 import org.nee.ny.sip.nysipserver.domain.api.VideoInfoResponse;
-import org.nee.ny.sip.nysipserver.interfaces.webhook.kit.ZlMediaKitRequest;
 
 /**
  * @Author: alec
@@ -26,6 +25,7 @@ public interface VideoPlayerService {
      * 停用
      * */
     void stop(String streamCode);
+
     /**
      * 此时是SIP发送了播放指令至终端设备,不代表终端设备一定能将流推送到流媒体服务器
      * 将此时产生的StreamCode 与 设备序列号做关联后缓存

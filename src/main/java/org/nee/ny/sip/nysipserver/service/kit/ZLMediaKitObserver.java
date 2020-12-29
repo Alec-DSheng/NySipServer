@@ -2,6 +2,7 @@ package org.nee.ny.sip.nysipserver.service.kit;
 
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.domain.ZlMediaKitServer;
+import org.springframework.scheduling.annotation.Async;
 
 /**
  * @Author: alec
@@ -18,7 +19,13 @@ public class ZLMediaKitObserver implements KitObserver {
     }
 
     @Override
+    @Async
     public void notifyObserver() {
         log.info("检查存活状态");
+    }
+
+    @Override
+    public String getId() {
+        return zlMediaKitServer.getMediaServerId();
     }
 }

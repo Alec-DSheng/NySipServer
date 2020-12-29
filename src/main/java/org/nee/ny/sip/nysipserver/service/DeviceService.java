@@ -17,12 +17,12 @@ public interface DeviceService {
     void dealDeviceRegister(RegisterEvent registerEvent);
 
     /**
-     * 设备上线
+     * 设备下线
      * */
     void dealDeviceOffline(String deviceNo);
 
     /**
-     * 设备下线
+     * 设备上线
      * */
     void dealDeviceOnline(String deviceNo);
 
@@ -35,4 +35,6 @@ public interface DeviceService {
      * 设备属性上报
      * */
     void dealReportDeviceProperty(DeviceInfo deviceInfo);
+
+    void loadChannel(String deviceId);
 }

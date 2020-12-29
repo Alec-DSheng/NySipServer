@@ -8,4 +8,6 @@ package org.nee.ny.sip.nysipserver.service.kit;
 public interface KitObserver {
 
     void notifyObserver();
+
+    String getId();
 }

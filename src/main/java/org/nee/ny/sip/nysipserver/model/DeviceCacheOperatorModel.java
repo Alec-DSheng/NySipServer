@@ -6,11 +6,12 @@ import org.nee.ny.sip.nysipserver.domain.Device;
 import org.nee.ny.sip.nysipserver.domain.DeviceCommonKey;
 import org.nee.ny.sip.nysipserver.event.RegisterEvent;
 import org.nee.ny.sip.nysipserver.utils.DateUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -71,9 +72,14 @@ public class DeviceCacheOperatorModel {
     public boolean hasHeart(String deviceNo) {
         String key = DeviceCommonKey.heart + deviceNo;
         String heartValue = redisTemplate.opsForValue().get(key);
+        log.info("heart {}", heartValue);
         return StringUtils.hasLength(heartValue);
     }
 
+    public void clearHeart(String deviceNo) {
+        String key = DeviceCommonKey.heart + deviceNo;
+        redisTemplate.delete(key);
+    }
 
     public void cacheStreamCode(String deviceKey, String streamCode) {
         String key = String.format("%s%s", DeviceCommonKey.stream, deviceKey);

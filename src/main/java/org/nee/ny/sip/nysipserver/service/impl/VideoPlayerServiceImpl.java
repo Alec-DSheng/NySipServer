@@ -1,17 +1,14 @@
 package org.nee.ny.sip.nysipserver.service.impl;
 
-import com.sun.javaws.exceptions.ErrorCodeResponseException;
 import lombok.extern.slf4j.Slf4j;
 import org.nee.ny.sip.nysipserver.configuration.SipServerProperties;
 import org.nee.ny.sip.nysipserver.domain.Device;
 import org.nee.ny.sip.nysipserver.domain.VideoPlayer;
 import org.nee.ny.sip.nysipserver.domain.api.VideoInfoResponse;
-import org.nee.ny.sip.nysipserver.interfaces.webhook.kit.ZlMediaKitRequest;
 import org.nee.ny.sip.nysipserver.model.DeviceCacheOperatorModel;
 import org.nee.ny.sip.nysipserver.service.VideoPlayerService;
 import org.nee.ny.sip.nysipserver.transaction.command.Invite.VideoPlayCommand;
 import org.nee.ny.sip.nysipserver.transaction.session.TransactionSessionManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 

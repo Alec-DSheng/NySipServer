@@ -63,8 +63,6 @@ public class DeviceListeners {
         if (!registerEvent.validateAuthorization(sipServerProperties.getPassword())) {
             response = sipRegisterResponse.responseAuthenticationFailure(requestEvent.getRequest());
             sendResponse(requestEvent, response);
-            log.info("设备下线 {}", registerEvent.getDeviceId());
-            deviceService.dealDeviceOffline(registerEvent.getDeviceId());
             return;
         }
         response = sipRegisterResponse.responseAuthenticationSuccess(requestEvent.getRequest());
